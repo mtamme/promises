@@ -34,7 +34,7 @@ public interface Promise<V> {
     /**
      * Adds the specified {@link Callback}.
      * 
-     * @param callback The {@link Callback}.
+     * @param callback The callback.
      */
     void addCallback(Callback<? super V> callback);
 

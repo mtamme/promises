@@ -99,7 +99,7 @@ public final class Deferred<V> extends AbstractPromise<V> {
         boolean reject(Throwable throwable);
 
         /**
-         * Call the specified {@link Callback} when the {@link Deferred} completes.
+         * Adds the specified {@link Callback}.
          * 
          * @param callback The callback.
          */
