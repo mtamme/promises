@@ -30,16 +30,16 @@ public abstract class AbstractPromise<V> implements Promise<V> {
             throw new IllegalArgumentException("Callback must not be null");
         }
 
-        final CompletablePromise<V> promise = new CompletablePromise<V>();
+        final Deferred<V> deferred = new Deferred<V>();
 
         addCallback(new Callback<V>() {
             @Override
             public void onResolved(final V value) {
                 try {
                     callback.onResolved(value);
-                    promise.resolve(value);
+                    deferred.resolve(value);
                 } catch (final Throwable t) {
-                    promise.reject(t);
+                    deferred.reject(t);
                 }
             }
 
@@ -47,15 +47,15 @@ public abstract class AbstractPromise<V> implements Promise<V> {
             public void onRejected(final Throwable throwable) {
                 try {
                     callback.onRejected(throwable);
-                    promise.reject(throwable);
+                    deferred.reject(throwable);
                 } catch (final Throwable t) {
                     t.addSuppressed(throwable);
-                    promise.reject(t);
+                    deferred.reject(t);
                 }
             }
         });
 
-        return promise;
+        return deferred;
     }
 
     @Override
@@ -64,7 +64,7 @@ public abstract class AbstractPromise<V> implements Promise<V> {
             throw new IllegalArgumentException("Function must not be null");
         }
 
-        final CompletablePromise<R> promise = new CompletablePromise<R>();
+        final Deferred<R> deferred = new Deferred<R>();
 
         addCallback(new Callback<V>() {
             @Override
@@ -72,19 +72,19 @@ public abstract class AbstractPromise<V> implements Promise<V> {
                 try {
                     final R result = function.apply(value);
 
-                    promise.resolve(result);
+                    deferred.resolve(result);
                 } catch (final Throwable t) {
-                    promise.reject(t);
+                    deferred.reject(t);
                 }
             }
 
             @Override
             public void onRejected(final Throwable throwable) {
-                promise.reject(throwable);
+                deferred.reject(throwable);
             }
         });
 
-        return promise;
+        return deferred;
     }
 
     @Override
@@ -93,16 +93,16 @@ public abstract class AbstractPromise<V> implements Promise<V> {
             throw new IllegalArgumentException("Function must not be null");
         }
 
-        final CompletablePromise<R> promise = new CompletablePromise<R>();
+        final Deferred<R> deferred = new Deferred<R>();
         final Callback<R> callback = new Callback<R>() {
             @Override
             public void onResolved(final R result) {
-                promise.resolve(result);
+                deferred.resolve(result);
             }
 
             @Override
             public void onRejected(final Throwable throwable) {
-                promise.reject(throwable);
+                deferred.reject(throwable);
             }
         };
 
@@ -110,20 +110,20 @@ public abstract class AbstractPromise<V> implements Promise<V> {
             @Override
             public void onResolved(final V value) {
                 try {
-                    final Promise<R> promise = function.apply(value);
+                    final Promise<R> result = function.apply(value);
 
-                    promise.addCallback(callback);
+                    result.addCallback(callback);
                 } catch (final Throwable t) {
-                    promise.reject(t);
+                    deferred.reject(t);
                 }
             }
 
             @Override
             public void onRejected(final Throwable throwable) {
-                promise.reject(throwable);
+                deferred.reject(throwable);
             }
         });
 
-        return promise;
+        return deferred;
     }
 }

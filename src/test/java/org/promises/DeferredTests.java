@@ -25,43 +25,43 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public final class CompletablePromiseTests {
+public final class DeferredTests {
 
     @Test
     public void constructorTest() {
         // Arrange
         // Act
-        final CompletablePromise<Integer> promise = new CompletablePromise<Integer>();
+        final Deferred<Integer> deferred = new Deferred<Integer>();
 
         // Assert
-        assertFalse(promise.isCompleted());
+        assertFalse(deferred.isCompleted());
     }
 
     @Test
     public void resolveTest() {
         // Arrange
-        final CompletablePromise<Integer> promise = new CompletablePromise<Integer>();
+        final Deferred<Integer> deferred = new Deferred<Integer>();
 
         // Act
-        final boolean resolved = promise.resolve(1);
+        final boolean resolved = deferred.resolve(1);
 
         // Assert
         assertTrue(resolved);
-        assertTrue(promise.isCompleted());
+        assertTrue(deferred.isCompleted());
     }
 
     @Test
     public void resolveWithRejectedTest() {
         // Arrange
-        final CompletablePromise<Integer> promise = new CompletablePromise<Integer>();
+        final Deferred<Integer> deferred = new Deferred<Integer>();
 
         // Act
-        promise.reject(new Throwable());
-        final boolean resolved = promise.resolve(1);
+        deferred.reject(new Throwable());
+        final boolean resolved = deferred.resolve(1);
 
         // Assert
         assertFalse(resolved);
-        assertTrue(promise.isCompleted());
+        assertTrue(deferred.isCompleted());
     }
 
     @Test
@@ -72,44 +72,44 @@ public final class CompletablePromiseTests {
 
         callback.onResolved(1);
         replay(callback);
-        final CompletablePromise<Integer> promise = new CompletablePromise<Integer>();
+        final Deferred<Integer> deferred = new Deferred<Integer>();
 
-        promise.addCallback(callback);
+        deferred.addCallback(callback);
 
         // Act
-        final boolean resolved = promise.resolve(1);
+        final boolean resolved = deferred.resolve(1);
 
         // Assert
         verify(callback);
         assertTrue(resolved);
-        assertTrue(promise.isCompleted());
+        assertTrue(deferred.isCompleted());
     }
 
     @Test
     public void rejectTest() {
         // Arrange
-        final CompletablePromise<Integer> promise = new CompletablePromise<Integer>();
+        final Deferred<Integer> deferred = new Deferred<Integer>();
 
         // Act
-        final boolean rejected = promise.reject(new Throwable());
+        final boolean rejected = deferred.reject(new Throwable());
 
         // Assert
         assertTrue(rejected);
-        assertTrue(promise.isCompleted());
+        assertTrue(deferred.isCompleted());
     }
 
     @Test
     public void rejectWithResolvedTest() {
         // Arrange
-        final CompletablePromise<Integer> promise = new CompletablePromise<Integer>();
+        final Deferred<Integer> deferred = new Deferred<Integer>();
 
         // Act
-        promise.resolve(1);
-        final boolean rejected = promise.reject(new Throwable());
+        deferred.resolve(1);
+        final boolean rejected = deferred.reject(new Throwable());
 
         // Assert
         assertFalse(rejected);
-        assertTrue(promise.isCompleted());
+        assertTrue(deferred.isCompleted());
     }
 
     @Test
@@ -121,17 +121,17 @@ public final class CompletablePromiseTests {
 
         callback.onRejected(throwable);
         replay(callback);
-        final CompletablePromise<Integer> promise = new CompletablePromise<Integer>();
+        final Deferred<Integer> deferred = new Deferred<Integer>();
 
-        promise.addCallback(callback);
+        deferred.addCallback(callback);
 
         // Act
-        final boolean rejected = promise.reject(throwable);
+        final boolean rejected = deferred.reject(throwable);
 
         // Assert
         verify(callback);
         assertTrue(rejected);
-        assertTrue(promise.isCompleted());
+        assertTrue(deferred.isCompleted());
     }
 
     @Test
@@ -141,10 +141,10 @@ public final class CompletablePromiseTests {
         final Callback<Integer> callback = (Callback<Integer>) createStrictMock(Callback.class);
 
         replay(callback);
-        final CompletablePromise<Integer> promise = new CompletablePromise<Integer>();
+        final Deferred<Integer> deferred = new Deferred<Integer>();
 
         // Act
-        promise.addCallback(callback);
+        deferred.addCallback(callback);
 
         // Assert
         verify(callback);
@@ -158,12 +158,12 @@ public final class CompletablePromiseTests {
 
         callback.onResolved(1);
         replay(callback);
-        final CompletablePromise<Integer> promise = new CompletablePromise<Integer>();
+        final Deferred<Integer> deferred = new Deferred<Integer>();
 
-        promise.resolve(1);
+        deferred.resolve(1);
 
         // Act
-        promise.addCallback(callback);
+        deferred.addCallback(callback);
 
         // Assert
         verify(callback);
@@ -178,12 +178,12 @@ public final class CompletablePromiseTests {
 
         callback.onRejected(throwable);
         replay(callback);
-        final CompletablePromise<Integer> promise = new CompletablePromise<Integer>();
+        final Deferred<Integer> deferred = new Deferred<Integer>();
 
-        promise.reject(throwable);
+        deferred.reject(throwable);
 
         // Act
-        promise.addCallback(callback);
+        deferred.addCallback(callback);
 
         // Assert
         verify(callback);

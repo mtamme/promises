@@ -22,21 +22,21 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Represents a nonblocking completable {@link Promise}.
+ * Represents a deferred.
  * 
  * @param <V> The value type.
  */
-public final class CompletablePromise<V> extends AbstractPromise<V> {
+public final class Deferred<V> extends AbstractPromise<V> {
 
     /**
-     * The current state of the {@link CompletablePromise}.
+     * The current state of the {@link Deferred}.
      */
     private final AtomicReference<State<V>> _state;
 
     /**
-     * Initializes a new instance of the {@link CompletablePromise} class.
+     * Initializes a new instance of the {@link Deferred} class.
      */
-    public CompletablePromise() {
+    public Deferred() {
         final State<V> initialState = new PendingState();
 
         _state = new AtomicReference<State<V>>(initialState);
@@ -69,37 +69,37 @@ public final class CompletablePromise<V> extends AbstractPromise<V> {
     }
 
     /**
-     * Defines a state of a {@link CompletablePromise}.
+     * Defines a state of a {@link Deferred}.
      * 
      * @param <V> The value type.
      */
     private static interface State<V> {
 
         /**
-         * Returns a value indicating weather the {@link CompletablePromise} completed.
+         * Returns a value indicating weather the {@link Deferred} completed.
          * 
-         * @return A value indicating weather the {@link CompletablePromise} completed.
+         * @return A value indicating weather the {@link Deferred} completed.
          */
         boolean isCompleted();
 
         /**
-         * Tries to resolves the {@link CompletablePromise} with the specified value.
+         * Tries to resolves the {@link Deferred} with the specified value.
          * 
          * @param value The value.
-         * @return A value indicating weather the {@link CompletablePromise} was resolved.
+         * @return A value indicating weather the {@link Deferred} was resolved.
          */
         boolean resolve(V value);
 
         /**
-         * Tries to rejects the {@link CompletablePromise} with the specified throwable.
+         * Tries to rejects the {@link Deferred} with the specified throwable.
          * 
          * @param throwable The throwable.
-         * @return A value indicating weather the {@link CompletablePromise} was rejected.
+         * @return A value indicating weather the {@link Deferred} was rejected.
          */
         boolean reject(Throwable throwable);
 
         /**
-         * Call the specified {@link Callback} when the {@link CompletablePromise} completes.
+         * Call the specified {@link Callback} when the {@link Deferred} completes.
          * 
          * @param callback The callback.
          */
@@ -107,7 +107,7 @@ public final class CompletablePromise<V> extends AbstractPromise<V> {
     }
 
     /**
-     * Represents the pending state of a {@link CompletablePromise}.
+     * Represents the pending state of a {@link Deferred}.
      * 
      * @param <V> The value type.
      */
@@ -182,7 +182,7 @@ public final class CompletablePromise<V> extends AbstractPromise<V> {
     }
 
     /**
-     * Represents the completed state of a {@link CompletablePromise}.
+     * Represents the completed state of a {@link Deferred}.
      * 
      * @param <V> The value type.
      */
@@ -205,7 +205,7 @@ public final class CompletablePromise<V> extends AbstractPromise<V> {
     }
 
     /**
-     * Represents the resolved state of a {@link CompletablePromise}.
+     * Represents the resolved state of a {@link Deferred}.
      * 
      * @param <V> The value type.
      */
@@ -232,7 +232,7 @@ public final class CompletablePromise<V> extends AbstractPromise<V> {
     }
 
     /**
-     * Represents the rejected state of a {@link CompletablePromise}.
+     * Represents the rejected state of a {@link Deferred}.
      * 
      * @param <V> The value type.
      */
