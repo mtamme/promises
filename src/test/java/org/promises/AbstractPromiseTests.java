@@ -31,7 +31,7 @@ public final class AbstractPromiseTests {
     public void addCallbackWithResolvedAndThenCallTest() throws Exception {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> callback = (Callback<Integer>) createStrictMock(Callback.class);
+        final Callback<Integer> callback = createStrictMock(Callback.class);
 
         callback.onResolved(1);
         replay(callback);
@@ -57,7 +57,7 @@ public final class AbstractPromiseTests {
     public void addCallbackWithRejectedAndThenCallTest() throws Exception {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> callback = (Callback<Integer>) createStrictMock(Callback.class);
+        final Callback<Integer> callback = createStrictMock(Callback.class);
         final Throwable throwable = new Throwable();
 
         callback.onRejected(throwable);
@@ -84,7 +84,7 @@ public final class AbstractPromiseTests {
     public void addCallbackWithResolvedAndThenApplyTest() throws Exception {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<String> callback = (Callback<String>) createStrictMock(Callback.class);
+        final Callback<String> callback = createStrictMock(Callback.class);
 
         callback.onResolved("1");
         replay(callback);
@@ -107,7 +107,7 @@ public final class AbstractPromiseTests {
     public void addCallbackWithRejectedAndThenApplyTest() throws Exception {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<String> callback = (Callback<String>) createStrictMock(Callback.class);
+        final Callback<String> callback = createStrictMock(Callback.class);
         final Throwable throwable = new Throwable();
 
         callback.onRejected(throwable);
@@ -131,7 +131,7 @@ public final class AbstractPromiseTests {
     public void addCallbackWithResolvedAndThenComposeTest() throws Exception {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<String> callback = (Callback<String>) createStrictMock(Callback.class);
+        final Callback<String> callback = createStrictMock(Callback.class);
 
         callback.onResolved("1");
         replay(callback);
@@ -154,7 +154,7 @@ public final class AbstractPromiseTests {
     public void addCallbackWithRejectedAndThenComposeTest() throws Exception {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<String> callback = (Callback<String>) createStrictMock(Callback.class);
+        final Callback<String> callback = createStrictMock(Callback.class);
         final Throwable throwable = new Throwable();
 
         callback.onRejected(throwable);
@@ -178,7 +178,7 @@ public final class AbstractPromiseTests {
     public void thenCallWithResolvedTest() throws Exception {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> callback = (Callback<Integer>) createStrictMock(Callback.class);
+        final Callback<Integer> callback = createStrictMock(Callback.class);
 
         callback.onResolved(1);
         replay(callback);
@@ -197,7 +197,7 @@ public final class AbstractPromiseTests {
     public void thenCallWithRejectedTest() throws Exception {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> callback = (Callback<Integer>) createStrictMock(Callback.class);
+        final Callback<Integer> callback = createStrictMock(Callback.class);
         final Throwable throwable = new Throwable();
 
         callback.onRejected(throwable);
@@ -217,7 +217,7 @@ public final class AbstractPromiseTests {
     public void thenCallWithResolvedAndRuntimeExceptionTest() throws Exception {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> callback = (Callback<Integer>) createStrictMock(Callback.class);
+        final Callback<Integer> callback = createStrictMock(Callback.class);
 
         callback.onResolved(anyInt());
         expectLastCall().andThrow(new RuntimeException());
@@ -237,7 +237,7 @@ public final class AbstractPromiseTests {
     public void thenCallWithRejectedAndRuntimeExceptionTest() throws Exception {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> callback = (Callback<Integer>) createStrictMock(Callback.class);
+        final Callback<Integer> callback = createStrictMock(Callback.class);
         final Throwable throwable = new Throwable();
 
         callback.onRejected(throwable);
@@ -258,7 +258,7 @@ public final class AbstractPromiseTests {
     public void thenApplyWithResolvedTest() throws Exception {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Function<Integer, String> function = (Function<Integer, String>) createStrictMock(Function.class);
+        final Function<Integer, String> function = createStrictMock(Function.class);
 
         expect(function.apply(1)).andReturn("1");
         replay(function);
@@ -277,7 +277,7 @@ public final class AbstractPromiseTests {
     public void thenApplyWithRejectedTest() throws Exception {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Function<Integer, String> function = (Function<Integer, String>) createStrictMock(Function.class);
+        final Function<Integer, String> function = createStrictMock(Function.class);
 
         replay(function);
         final Throwable throwable = new Throwable();
@@ -296,7 +296,7 @@ public final class AbstractPromiseTests {
     public void thenApplyWithResolvedAndExceptionTest() throws Exception {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Function<Integer, String> function = (Function<Integer, String>) createStrictMock(Function.class);
+        final Function<Integer, String> function = createStrictMock(Function.class);
 
         expect(function.apply(anyInt())).andThrow(new Exception());
         replay(function);
@@ -315,7 +315,7 @@ public final class AbstractPromiseTests {
     public void thenApplyWithRejectedAndExceptionTest() throws Exception {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Function<Integer, String> function = (Function<Integer, String>) createStrictMock(Function.class);
+        final Function<Integer, String> function = createStrictMock(Function.class);
 
         replay(function);
         final Throwable throwable = new Throwable();
@@ -334,7 +334,7 @@ public final class AbstractPromiseTests {
     public void thenComposeWithResolvedTest() throws Exception {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Function<Integer, Promise<String>> function = (Function<Integer, Promise<String>>) createStrictMock(Function.class);
+        final Function<Integer, Promise<String>> function = createStrictMock(Function.class);
 
         expect(function.apply(1)).andReturn(Promises.resolved("1"));
         replay(function);
@@ -353,7 +353,7 @@ public final class AbstractPromiseTests {
     public void thenComposeWithRejectedTest() throws Exception {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Function<Integer, Promise<String>> function = (Function<Integer, Promise<String>>) createStrictMock(Function.class);
+        final Function<Integer, Promise<String>> function = createStrictMock(Function.class);
 
         replay(function);
         final Throwable throwable = new Throwable();
@@ -372,7 +372,7 @@ public final class AbstractPromiseTests {
     public void thenComposeWithResolvedAndExceptionTest() throws Exception {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Function<Integer, Promise<String>> function = (Function<Integer, Promise<String>>) createStrictMock(Function.class);
+        final Function<Integer, Promise<String>> function = createStrictMock(Function.class);
 
         expect(function.apply(1)).andThrow(new Exception());
         replay(function);
@@ -391,7 +391,7 @@ public final class AbstractPromiseTests {
     public void thenComposeWithRejectedAndExceptionTest() throws Exception {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Function<Integer, Promise<String>> function = (Function<Integer, Promise<String>>) createStrictMock(Function.class);
+        final Function<Integer, Promise<String>> function = createStrictMock(Function.class);
 
         replay(function);
         final Throwable throwable = new Throwable();
