@@ -45,7 +45,7 @@ public final class SampleTests {
                 // listener.onConnected();
                 return null;
             }
-        }).then(new Call<Void>() {
+        }).onComplete(new Call<Void>() {
             @Override
             public void onFailure(final Throwable cause) {
                 // listener.onError();
@@ -72,7 +72,7 @@ public final class SampleTests {
                 // transport.abort();
                 return null;
             }
-        }).then(new Call<Void>() {
+        }).onComplete(new Call<Void>() {
             @Override
             protected void onComplete(final Void value, final Throwable cause) {
                 if (cause != null) {
@@ -101,7 +101,7 @@ public final class SampleTests {
                 // transport.reconnect();
                 return null;
             }
-        }).then(new Call<Void>() {
+        }).onComplete(new Call<Void>() {
             @Override
             public void onSuccess(final Void value) {
                 // listener.onReconnected();

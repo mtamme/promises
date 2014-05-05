@@ -29,7 +29,7 @@ public abstract class RunAsync<T, R> extends Deferred<R> implements Continuation
         try {
             final Promise<R> result = doRun(value);
 
-            result.then(new Callback<R>() {
+            result.onComplete(new Callback<R>() {
                 @Override
                 public void onSuccess(final R value) {
                     setSuccess(value);

@@ -74,7 +74,7 @@ public final class DeferredTests {
         replay(onSuccess);
         final Deferred<Integer> deferred = new Deferred<Integer>();
 
-        deferred.then(onSuccess);
+        deferred.onComplete(onSuccess);
 
         // Act
         final boolean success = deferred.setSuccess(1);
@@ -116,20 +116,20 @@ public final class DeferredTests {
     public void rejectWithAddCallbackTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> onFailure = createStrictMock(Callback.class);
+        final Callback<Integer> callback = createStrictMock(Callback.class);
         final Throwable cause = new Throwable();
 
-        onFailure.onFailure(cause);
-        replay(onFailure);
+        callback.onFailure(cause);
+        replay(callback);
         final Deferred<Integer> deferred = new Deferred<Integer>();
 
-        deferred.then(onFailure);
+        deferred.onComplete(callback);
 
         // Act
         final boolean failure = deferred.setFailure(cause);
 
         // Assert
-        verify(onFailure);
+        verify(callback);
         assertTrue(failure);
         assertTrue(deferred.isComplete());
     }
@@ -144,7 +144,7 @@ public final class DeferredTests {
         final Deferred<Integer> deferred = new Deferred<Integer>();
 
         // Act
-        deferred.then(onSuccess);
+        deferred.onComplete(onSuccess);
 
         // Assert
         verify(onSuccess);
@@ -163,7 +163,7 @@ public final class DeferredTests {
         deferred.setSuccess(1);
 
         // Act
-        deferred.then(onSuccess);
+        deferred.onComplete(onSuccess);
 
         // Assert
         verify(onSuccess);
@@ -173,19 +173,19 @@ public final class DeferredTests {
     public void addCallbackWithRejectedTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> onFailure = createStrictMock(Callback.class);
+        final Callback<Integer> callback = createStrictMock(Callback.class);
         final Throwable cause = new Throwable();
 
-        onFailure.onFailure(cause);
-        replay(onFailure);
+        callback.onFailure(cause);
+        replay(callback);
         final Deferred<Integer> deferred = new Deferred<Integer>();
 
         deferred.setFailure(cause);
 
         // Act
-        deferred.then(onFailure);
+        deferred.onComplete(callback);
 
         // Assert
-        verify(onFailure);
+        verify(callback);
     }
 }
