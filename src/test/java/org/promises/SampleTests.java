@@ -59,9 +59,9 @@ public final class SampleTests {
 
         // listener.onDisconnecting();
         // channel.close();
-        deferred.then(new Recover<Void>() {
+        deferred.then(new Catch<Void>() {
             @Override
-            protected Void doRecover(final Throwable cause) throws Exception {
+            protected Void doCatch(final Throwable cause) throws Exception {
                 // listener.onError();
                 return null;
             }
@@ -91,9 +91,9 @@ public final class SampleTests {
 
         // listener.onReconnecting();
         // channel.close();
-        deferred.then(new Recover<Void>() {
+        deferred.then(new Catch<Void>() {
             @Override
-            protected Void doRecover(final Throwable cause) throws Exception {
+            protected Void doCatch(final Throwable cause) throws Exception {
                 // listener.onError();
                 return null;
             }
