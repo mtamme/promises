@@ -39,15 +39,10 @@ public final class SampleTests {
                 // transport.connect();
                 return null;
             }
-        }).then(new Run<Void, Void>() {
-            @Override
-            protected Void doRun(final Void value) throws Exception {
-                // listener.onConnected();
-                return null;
-            }
         }).then(new Callback<Void>() {
             @Override
             public void onSuccess(final Void value) {
+                // listener.onConnected();
             }
 
             @Override
@@ -64,9 +59,9 @@ public final class SampleTests {
 
         // listener.onDisconnecting();
         // channel.close();
-        deferred.then(new Catch<Void>() {
+        deferred.then(new Recover<Void>() {
             @Override
-            protected Void doCatch(final Throwable cause) throws Exception {
+            protected Void doRecover(final Throwable cause) throws Exception {
                 // listener.onError();
                 return null;
             }
@@ -96,9 +91,9 @@ public final class SampleTests {
 
         // listener.onReconnecting();
         // channel.close();
-        deferred.then(new Catch<Void>() {
+        deferred.then(new Recover<Void>() {
             @Override
-            protected Void doCatch(final Throwable cause) throws Exception {
+            protected Void doRecover(final Throwable cause) throws Exception {
                 // listener.onError();
                 return null;
             }

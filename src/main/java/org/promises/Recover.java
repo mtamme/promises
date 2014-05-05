@@ -20,9 +20,9 @@ package org.promises;
 /**
  * 
  */
-public abstract class Catch<T> extends Deferred<T> implements Continuation<T, T> {
+public abstract class Recover<T> extends Deferred<T> implements Continuation<T, T> {
 
-    protected abstract T doCatch(Throwable cause) throws Exception;
+    protected abstract T doRecover(Throwable cause) throws Exception;
 
     @Override
     public final void onSuccess(final T value) {
@@ -32,7 +32,7 @@ public abstract class Catch<T> extends Deferred<T> implements Continuation<T, T>
     @Override
     public final void onFailure(final Throwable cause) {
         try {
-            final T value = doCatch(cause);
+            final T value = doRecover(cause);
 
             setSuccess(value);
         } catch (final Throwable t) {
