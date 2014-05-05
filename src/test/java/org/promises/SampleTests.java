@@ -20,12 +20,6 @@ package org.promises;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.promises.Call;
-import org.promises.Catch;
-import org.promises.Deferred;
-import org.promises.Promise;
-import org.promises.Run;
-import org.promises.RunAsync;
 
 /**
  * 
