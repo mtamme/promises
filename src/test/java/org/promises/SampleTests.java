@@ -45,7 +45,7 @@ public final class SampleTests {
                 // listener.onConnected();
                 return null;
             }
-        }).onComplete(new Callback<Void>() {
+        }).then(new Callback<Void>() {
             @Override
             public void onSuccess(final Void value) {
             }
@@ -76,7 +76,7 @@ public final class SampleTests {
                 // transport.abort();
                 return null;
             }
-        }).onComplete(new Callback<Void>() {
+        }).then(new Callback<Void>() {
             @Override
             public void onSuccess(final Void value) {
                 // listener.onDisconnected();
@@ -108,7 +108,7 @@ public final class SampleTests {
                 // transport.reconnect();
                 return null;
             }
-        }).onComplete(new Callback<Void>() {
+        }).then(new Callback<Void>() {
             @Override
             public void onSuccess(final Void value) {
                 // listener.onReconnected();

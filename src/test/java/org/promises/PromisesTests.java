@@ -66,7 +66,7 @@ public final class PromisesTests {
         final Promise<Integer> promise = Promises.success(1);
 
         // Act
-        promise.onComplete(callback);
+        promise.then(callback);
 
         // Assert
         verify(callback);
@@ -84,7 +84,7 @@ public final class PromisesTests {
         final Promise<Integer> promise = Promises.failure(cause);
 
         // Act
-        promise.onComplete(callback);
+        promise.then(callback);
 
         // Assert
         verify(callback);

@@ -74,7 +74,7 @@ public final class DeferredTests {
         replay(onSuccess);
         final Deferred<Integer> deferred = new Deferred<Integer>();
 
-        deferred.onComplete(onSuccess);
+        deferred.then(onSuccess);
 
         // Act
         final boolean success = deferred.setSuccess(1);
@@ -123,7 +123,7 @@ public final class DeferredTests {
         replay(callback);
         final Deferred<Integer> deferred = new Deferred<Integer>();
 
-        deferred.onComplete(callback);
+        deferred.then(callback);
 
         // Act
         final boolean failure = deferred.setFailure(cause);
@@ -144,7 +144,7 @@ public final class DeferredTests {
         final Deferred<Integer> deferred = new Deferred<Integer>();
 
         // Act
-        deferred.onComplete(onSuccess);
+        deferred.then(onSuccess);
 
         // Assert
         verify(onSuccess);
@@ -163,7 +163,7 @@ public final class DeferredTests {
         deferred.setSuccess(1);
 
         // Act
-        deferred.onComplete(onSuccess);
+        deferred.then(onSuccess);
 
         // Assert
         verify(onSuccess);
@@ -183,7 +183,7 @@ public final class DeferredTests {
         deferred.setFailure(cause);
 
         // Act
-        deferred.onComplete(callback);
+        deferred.then(callback);
 
         // Assert
         verify(callback);

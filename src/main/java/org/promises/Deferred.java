@@ -98,12 +98,12 @@ public class Deferred<T> implements Promise<T> {
     }
 
     @Override
-    public final Promise<T> onComplete(final Callback<T> callback) {
+    public final Promise<T> then(final Callback<T> callback) {
         if (callback == null) {
             throw new IllegalArgumentException("Callback must not be null");
         }
 
-        _state.get().onComplete(callback);
+        _state.get().addCallback(callback);
 
         return this;
     }
@@ -114,7 +114,7 @@ public class Deferred<T> implements Promise<T> {
             throw new IllegalArgumentException("Continuation must not be null");
         }
 
-        _state.get().onComplete(continuation);
+        _state.get().addCallback(continuation);
 
         return continuation;
     }
@@ -149,7 +149,7 @@ public class Deferred<T> implements Promise<T> {
          * 
          * @param callback The complete callback.
          */
-        void onComplete(Callback<T> callback);
+        void addCallback(Callback<T> callback);
     }
 
     /**
@@ -239,7 +239,7 @@ public class Deferred<T> implements Promise<T> {
         }
 
         @Override
-        public void onComplete(final Callback<T> callback) {
+        public void addCallback(final Callback<T> callback) {
             final Stage<T> stage = new Stage<T>(callback);
 
             addStage(stage);
@@ -291,7 +291,7 @@ public class Deferred<T> implements Promise<T> {
         }
 
         @Override
-        public void onComplete(final Callback<T> callback) {
+        public void addCallback(final Callback<T> callback) {
             callback.onSuccess(_value);
         }
     }
@@ -318,7 +318,7 @@ public class Deferred<T> implements Promise<T> {
         }
 
         @Override
-        public void onComplete(final Callback<T> callback) {
+        public void addCallback(final Callback<T> callback) {
             callback.onFailure(_cause);
         }
     }
@@ -358,7 +358,7 @@ public class Deferred<T> implements Promise<T> {
          */
         public void complete(final State<T> state) {
             if (_completed.compareAndSet(false, true)) {
-                state.onComplete(_callback);
+                state.addCallback(_callback);
             }
         }
     }
