@@ -20,9 +20,18 @@ package org.promises;
 /**
  * 
  */
-public interface Callback<T> {
+public abstract class Call<T> implements Callback<T> {
 
-    void onSuccess(T value);
+    protected void onComplete(T value, Throwable cause) {
+    }
 
-    void onFailure(Throwable cause);
+    @Override
+    public void onSuccess(final T value) {
+        onComplete(value, null);
+    }
+
+    @Override
+    public void onFailure(final Throwable cause) {
+        onComplete(null, cause);
+    }
 }

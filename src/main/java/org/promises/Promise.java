@@ -18,47 +18,13 @@
 package org.promises;
 
 /**
- * Defines a promise.
  * 
- * @param <V> The value type.
  */
-public interface Promise<V> {
+public interface Promise<T> {
 
-    /**
-     * Returns a value indicating whether the {@link Promise} completed.
-     * 
-     * @return A value indicating whether the {@link Promise} completed.
-     */
-    boolean isCompleted();
+    boolean isComplete();
 
-    /**
-     * Adds the specified {@link Callback}.
-     * 
-     * @param callback The callback.
-     */
-    void addCallback(Callback<? super V> callback);
+    Promise<T> then(Callback<T> callback);
 
-    /**
-     * Returns a new {@link Promise} that, when this {@link Promise} completes, is executed with this {@link Promise}'s result as the argument to the supplied callback.
-     * 
-     * @param callback The callback.
-     * @return The new {@link Promise}.
-     */
-    Promise<V> thenCall(Callback<? super V> callback);
-
-    /**
-     * Returns a new {@link Promise} that, when this {@link Promise} completes normally, is executed with this {@link Promise}'s result as the argument to the supplied function.
-     * 
-     * @param function The function.
-     * @return The new {@link Promise}.
-     */
-    <R> Promise<R> thenApply(Function<? super V, ? extends R> function);
-
-    /**
-     * Returns a new {@link Promise} that, when this {@link Promise} completes normally, is executed with this {@link Promise}' result as the argument to the supplied function.
-     * 
-     * @param function The function.
-     * @return The new {@link Promise}.
-     */
-    <R> Promise<R> thenCompose(Function<? super V, ? extends Promise<R>> function);
+    <R> Promise<R> then(Continuation<T, R> continuation);
 }

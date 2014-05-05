@@ -37,63 +37,63 @@ public final class PromisesTests {
     public void resolvedTest() {
         // Arrange
         // Act
-        final Promise<Integer> promise = Promises.resolved(1);
+        final Promise<Integer> promise = Promises.success(1);
 
         // Assert
         assertNotNull(promise);
-        assertTrue(promise.isCompleted());
+        assertTrue(promise.isComplete());
     }
 
     @Test
     public void rejectedTest() {
         // Arrange
         // Act
-        final Promise<Integer> promise = Promises.rejected(new Throwable());
+        final Promise<Integer> promise = Promises.failure(new Throwable());
 
         // Assert
         assertNotNull(promise);
-        assertTrue(promise.isCompleted());
+        assertTrue(promise.isComplete());
     }
 
     @Test
     public void addCallbackWithResolvedTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> callback = createStrictMock(Callback.class);
+        final Callback<Integer> onSuccess = createStrictMock(Callback.class);
 
-        callback.onResolved(1);
-        replay(callback);
-        final Promise<Integer> promise = Promises.resolved(1);
+        onSuccess.onSuccess(1);
+        replay(onSuccess);
+        final Promise<Integer> promise = Promises.success(1);
 
         // Act
-        promise.addCallback(callback);
+        promise.then(onSuccess);
 
         // Assert
-        verify(callback);
+        verify(onSuccess);
     }
 
     @Test
     public void addCallbackWithRejectedTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> callback = createStrictMock(Callback.class);
-        final Throwable throwable = new Throwable();
+        final Callback<Integer> onFailure = createStrictMock(Callback.class);
+        final Throwable cause = new Throwable();
 
-        callback.onRejected(throwable);
-        replay(callback);
-        final Promise<Integer> promise = Promises.rejected(throwable);
+        onFailure.onFailure(cause);
+        replay(onFailure);
+        final Promise<Integer> promise = Promises.failure(cause);
 
         // Act
-        promise.addCallback(callback);
+        promise.then(onFailure);
 
         // Assert
-        verify(callback);
+        verify(onFailure);
     }
 
     @Test
     public void getWithResolvedAndToFutureTest() throws InterruptedException, ExecutionException {
         // Arrange
-        final Promise<Integer> promise = Promises.resolved(1);
+        final Promise<Integer> promise = Promises.success(1);
         final Future<Integer> future = Promises.toFuture(promise);
 
         // Act
@@ -106,7 +106,7 @@ public final class PromisesTests {
     @Test(expected = ExecutionException.class)
     public void getWithRejectedAndToFutureTest() throws InterruptedException, ExecutionException {
         // Arrange
-        final Promise<Integer> promise = Promises.rejected(new Throwable());
+        final Promise<Integer> promise = Promises.failure(new Throwable());
         final Future<Integer> future = Promises.toFuture(promise);
 
         // Act
@@ -119,7 +119,7 @@ public final class PromisesTests {
     @Test
     public void getWithResolvedAndToFutureAndTimeoutTest() throws InterruptedException, ExecutionException, TimeoutException {
         // Arrange
-        final Promise<Integer> promise = Promises.resolved(1);
+        final Promise<Integer> promise = Promises.success(1);
         final Future<Integer> future = Promises.toFuture(promise);
 
         // Act
@@ -132,7 +132,7 @@ public final class PromisesTests {
     @Test(expected = ExecutionException.class)
     public void getWithRejectedAndToFutureAndTimeoutTest() throws InterruptedException, ExecutionException, TimeoutException {
         // Arrange
-        final Promise<Integer> promise = Promises.rejected(new Throwable());
+        final Promise<Integer> promise = Promises.failure(new Throwable());
         final Future<Integer> future = Promises.toFuture(promise);
 
         // Act

@@ -20,9 +20,6 @@ package org.promises;
 /**
  * 
  */
-public interface Callback<T> {
+public interface Continuation<T, R> extends Callback<T>, Promise<R> {
 
-    void onSuccess(T value);
-
-    void onFailure(Throwable cause);
 }

@@ -34,7 +34,7 @@ public final class DeferredTests {
         final Deferred<Integer> deferred = new Deferred<Integer>();
 
         // Assert
-        assertFalse(deferred.isCompleted());
+        assertFalse(deferred.isComplete());
     }
 
     @Test
@@ -43,11 +43,11 @@ public final class DeferredTests {
         final Deferred<Integer> deferred = new Deferred<Integer>();
 
         // Act
-        final boolean resolved = deferred.resolve(1);
+        final boolean success = deferred.setSuccess(1);
 
         // Assert
-        assertTrue(resolved);
-        assertTrue(deferred.isCompleted());
+        assertTrue(success);
+        assertTrue(deferred.isComplete());
     }
 
     @Test
@@ -56,33 +56,33 @@ public final class DeferredTests {
         final Deferred<Integer> deferred = new Deferred<Integer>();
 
         // Act
-        deferred.reject(new Throwable());
-        final boolean resolved = deferred.resolve(1);
+        deferred.setFailure(new Throwable());
+        final boolean success = deferred.setSuccess(1);
 
         // Assert
-        assertFalse(resolved);
-        assertTrue(deferred.isCompleted());
+        assertFalse(success);
+        assertTrue(deferred.isComplete());
     }
 
     @Test
     public void resolveWithAddCallbackTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> callback = createStrictMock(Callback.class);
+        final Callback<Integer> onSuccess = createStrictMock(Callback.class);
 
-        callback.onResolved(1);
-        replay(callback);
+        onSuccess.onSuccess(1);
+        replay(onSuccess);
         final Deferred<Integer> deferred = new Deferred<Integer>();
 
-        deferred.addCallback(callback);
+        deferred.then(onSuccess);
 
         // Act
-        final boolean resolved = deferred.resolve(1);
+        final boolean success = deferred.setSuccess(1);
 
         // Assert
-        verify(callback);
-        assertTrue(resolved);
-        assertTrue(deferred.isCompleted());
+        verify(onSuccess);
+        assertTrue(success);
+        assertTrue(deferred.isComplete());
     }
 
     @Test
@@ -91,11 +91,11 @@ public final class DeferredTests {
         final Deferred<Integer> deferred = new Deferred<Integer>();
 
         // Act
-        final boolean rejected = deferred.reject(new Throwable());
+        final boolean failure = deferred.setFailure(new Throwable());
 
         // Assert
-        assertTrue(rejected);
-        assertTrue(deferred.isCompleted());
+        assertTrue(failure);
+        assertTrue(deferred.isComplete());
     }
 
     @Test
@@ -104,88 +104,88 @@ public final class DeferredTests {
         final Deferred<Integer> deferred = new Deferred<Integer>();
 
         // Act
-        deferred.resolve(1);
-        final boolean rejected = deferred.reject(new Throwable());
+        deferred.setSuccess(1);
+        final boolean failure = deferred.setFailure(new Throwable());
 
         // Assert
-        assertFalse(rejected);
-        assertTrue(deferred.isCompleted());
+        assertFalse(failure);
+        assertTrue(deferred.isComplete());
     }
 
     @Test
     public void rejectWithAddCallbackTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> callback = createStrictMock(Callback.class);
-        final Throwable throwable = new Throwable();
+        final Callback<Integer> onFailure = createStrictMock(Callback.class);
+        final Throwable cause = new Throwable();
 
-        callback.onRejected(throwable);
-        replay(callback);
+        onFailure.onFailure(cause);
+        replay(onFailure);
         final Deferred<Integer> deferred = new Deferred<Integer>();
 
-        deferred.addCallback(callback);
+        deferred.then(onFailure);
 
         // Act
-        final boolean rejected = deferred.reject(throwable);
+        final boolean failure = deferred.setFailure(cause);
 
         // Assert
-        verify(callback);
-        assertTrue(rejected);
-        assertTrue(deferred.isCompleted());
+        verify(onFailure);
+        assertTrue(failure);
+        assertTrue(deferred.isComplete());
     }
 
     @Test
     public void addCallbackWithPendingTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> callback = createStrictMock(Callback.class);
+        final Callback<Integer> onSuccess = createStrictMock(Callback.class);
 
-        replay(callback);
+        replay(onSuccess);
         final Deferred<Integer> deferred = new Deferred<Integer>();
 
         // Act
-        deferred.addCallback(callback);
+        deferred.then(onSuccess);
 
         // Assert
-        verify(callback);
+        verify(onSuccess);
     }
 
     @Test
     public void addCallbackWithResolvedTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> callback = createStrictMock(Callback.class);
+        final Callback<Integer> onSuccess = createStrictMock(Callback.class);
 
-        callback.onResolved(1);
-        replay(callback);
+        onSuccess.onSuccess(1);
+        replay(onSuccess);
         final Deferred<Integer> deferred = new Deferred<Integer>();
 
-        deferred.resolve(1);
+        deferred.setSuccess(1);
 
         // Act
-        deferred.addCallback(callback);
+        deferred.then(onSuccess);
 
         // Assert
-        verify(callback);
+        verify(onSuccess);
     }
 
     @Test
     public void addCallbackWithRejectedTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> callback = createStrictMock(Callback.class);
-        final Throwable throwable = new Throwable();
+        final Callback<Integer> onFailure = createStrictMock(Callback.class);
+        final Throwable cause = new Throwable();
 
-        callback.onRejected(throwable);
-        replay(callback);
+        onFailure.onFailure(cause);
+        replay(onFailure);
         final Deferred<Integer> deferred = new Deferred<Integer>();
 
-        deferred.reject(throwable);
+        deferred.setFailure(cause);
 
         // Act
-        deferred.addCallback(callback);
+        deferred.then(onFailure);
 
         // Assert
-        verify(callback);
+        verify(onFailure);
     }
 }

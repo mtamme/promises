@@ -18,19 +18,26 @@
 package org.promises;
 
 /**
- * Defines a function.
  * 
- * @param <V> The value type.
- * @param <R> The result type.
  */
-public interface Function<V, R> {
+public abstract class Catch<T> extends Deferred<T> implements Continuation<T, T> {
 
-    /**
-     * Applies the {@link Function} to the specified value.
-     * 
-     * @param value The value.
-     * @return The result.
-     * @throws Exception
-     */
-    R apply(V value) throws Exception;
+    protected abstract T doCatch(Throwable cause) throws Exception;
+
+    @Override
+    public final void onSuccess(final T value) {
+        setSuccess(value);
+    }
+
+    @Override
+    public final void onFailure(final Throwable cause) {
+        try {
+            final T value = doCatch(cause);
+
+            setSuccess(value);
+        } catch (final Throwable t) {
+            t.addSuppressed(cause);
+            setFailure(t);
+        }
+    }
 }

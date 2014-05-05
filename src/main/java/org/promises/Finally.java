@@ -20,9 +20,30 @@ package org.promises;
 /**
  * 
  */
-public interface Callback<T> {
+public abstract class Finally<T, R> extends Deferred<R> implements Continuation<T, R> {
 
-    void onSuccess(T value);
+    protected abstract R doFinally(T value, Throwable cause) throws Exception;
 
-    void onFailure(Throwable cause);
+    @Override
+    public final void onSuccess(final T value) {
+        try {
+            final R result = doFinally(value, null);
+
+            setSuccess(result);
+        } catch (final Throwable t) {
+            setFailure(t);
+        }
+    }
+
+    @Override
+    public final void onFailure(final Throwable cause) {
+        try {
+            final R result = doFinally(null, cause);
+
+            setSuccess(result);
+        } catch (final Throwable t) {
+            t.addSuppressed(cause);
+            setFailure(t);
+        }
+    }
 }

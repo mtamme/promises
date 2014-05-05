@@ -25,16 +25,16 @@ import java.util.concurrent.TimeoutException;
 /**
  * Represents a {@link Callback} which can be awaited.
  * 
- * @param <V> The value type.
+ * @param <T> The value type.
  */
-final class Awaiter<V> implements Callback<V> {
+final class Awaiter<T> implements Callback<T> {
 
     /**
      * Defines a result.
      * 
      * @param <V> The value type.
      */
-    private interface Result<V> {
+    private interface Value<V> {
         /**
          * Returns the value.
          * 
@@ -52,7 +52,7 @@ final class Awaiter<V> implements Callback<V> {
     /**
      * The result.
      */
-    private Result<V> _result;
+    private Value<T> _value;
 
     /**
      * Initializes a new instance of the {@link Awaiter} class.
@@ -60,7 +60,7 @@ final class Awaiter<V> implements Callback<V> {
     public Awaiter() {
         _completion = new CountDownLatch(1);
 
-        _result = null;
+        _value = null;
     }
 
     /**
@@ -81,10 +81,10 @@ final class Awaiter<V> implements Callback<V> {
      * @throws InterruptedException
      * @throws ExecutionException
      */
-    public V get() throws InterruptedException, ExecutionException {
+    public T get() throws InterruptedException, ExecutionException {
         _completion.await();
 
-        return _result.get();
+        return _value.get();
     }
 
     /**
@@ -97,35 +97,33 @@ final class Awaiter<V> implements Callback<V> {
      * @throws ExecutionException
      * @throws TimeoutException
      */
-    public V get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public T get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         if (!_completion.await(timeout, unit)) {
             throw new TimeoutException("A timeout occured while waiting for completion");
         }
 
-        return _result.get();
+        return _value.get();
     }
 
     @Override
-    public void onResolved(final V value) {
-        _result = new Result<V>() {
+    public void onSuccess(final T value) {
+        _value = new Value<T>() {
             @Override
-            public V get() throws ExecutionException {
+            public T get() throws ExecutionException {
                 return value;
             }
         };
-
         _completion.countDown();
     }
 
     @Override
-    public void onRejected(final Throwable throwable) {
-        _result = new Result<V>() {
+    public void onFailure(final Throwable cause) {
+        _value = new Value<T>() {
             @Override
-            public V get() throws ExecutionException {
-                throw new ExecutionException(throwable);
+            public T get() throws ExecutionException {
+                throw new ExecutionException(cause);
             }
         };
-
         _completion.countDown();
     }
 }

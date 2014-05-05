@@ -24,22 +24,48 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Represents a deferred.
  * 
- * @param <V> The value type.
+ * @param <T> The value type.
  */
-public final class Deferred<V> extends AbstractPromise<V> {
+public class Deferred<T> implements Promise<T> {
 
     /**
      * The current state of the {@link Deferred}.
      */
-    private final AtomicReference<State<V>> _state;
+    private final AtomicReference<State<T>> _state;
 
     /**
      * Initializes a new instance of the {@link Deferred} class.
      */
     public Deferred() {
-        final State<V> initialState = new PendingState();
+        final State<T> initialState = new PendingState();
 
-        _state = new AtomicReference<State<V>>(initialState);
+        _state = new AtomicReference<State<T>>(initialState);
+    }
+
+    /**
+     * Initializes a new instance of the {@link Deferred} class.
+     * 
+     * @param value The value.
+     */
+    public Deferred(final T value) {
+        final State<T> initialState = new SuccessState<T>(value);
+
+        _state = new AtomicReference<State<T>>(initialState);
+    }
+
+    /**
+     * Initializes a new instance of the {@link Deferred} class.
+     * 
+     * @param cause The cause.
+     */
+    public Deferred(final Throwable cause) {
+        if (cause == null) {
+            throw new IllegalArgumentException("Cause must not be null");
+        }
+
+        final State<T> initialState = new FailureState<T>(cause);
+
+        _state = new AtomicReference<State<T>>(initialState);
     }
 
     /**
@@ -48,51 +74,59 @@ public final class Deferred<V> extends AbstractPromise<V> {
      * @param value The value.
      * @return A value indicating whether the {@link Deferred} was resolved.
      */
-    public boolean resolve(final V value) {
-        return _state.get().resolve(value);
+    public final boolean setSuccess(final T value) {
+        return _state.get().setSuccess(value);
     }
 
     /**
      * Tries to rejects the {@link Deferred} with the specified throwable.
      * 
-     * @param throwable The throwable.
+     * @param cause The cause.
      * @return A value indicating whether the {@link Deferred} was rejected.
      */
-    public boolean reject(final Throwable throwable) {
-        if (throwable == null) {
-            throw new IllegalArgumentException("Throwable must not be null");
+    public final boolean setFailure(final Throwable cause) {
+        if (cause == null) {
+            throw new IllegalArgumentException("Cause must not be null");
         }
 
-        return _state.get().reject(throwable);
+        return _state.get().setFailure(cause);
     }
 
     @Override
-    public boolean isCompleted() {
-        return _state.get().isCompleted();
+    public final boolean isComplete() {
+        return _state.get().isComplete();
     }
 
     @Override
-    public void addCallback(final Callback<? super V> callback) {
+    public final Promise<T> then(final Callback<T> callback) {
         if (callback == null) {
             throw new IllegalArgumentException("Callback must not be null");
         }
 
         _state.get().addCallback(callback);
+
+        return this;
+    }
+
+    @Override
+    public final <R> Promise<R> then(Continuation<T, R> continuation) {
+        if (continuation == null) {
+            throw new IllegalArgumentException("Continuation must not be null");
+        }
+
+        _state.get().addCallback(continuation);
+
+        return continuation;
     }
 
     /**
      * Defines a state of a {@link Deferred}.
      * 
-     * @param <V> The value type.
+     * @param <T> The value type.
      */
-    private static interface State<V> {
+    private static interface State<T> {
 
-        /**
-         * Returns a value indicating whether the {@link Deferred} completed.
-         * 
-         * @return A value indicating whether the {@link Deferred} completed.
-         */
-        boolean isCompleted();
+        boolean isComplete();
 
         /**
          * Tries to resolves the {@link Deferred} with the specified value.
@@ -100,7 +134,7 @@ public final class Deferred<V> extends AbstractPromise<V> {
          * @param value The value.
          * @return A value indicating whether the {@link Deferred} was resolved.
          */
-        boolean resolve(V value);
+        boolean setSuccess(T value);
 
         /**
          * Tries to rejects the {@link Deferred} with the specified throwable.
@@ -108,14 +142,14 @@ public final class Deferred<V> extends AbstractPromise<V> {
          * @param throwable The throwable.
          * @return A value indicating whether the {@link Deferred} was rejected.
          */
-        boolean reject(Throwable throwable);
+        boolean setFailure(Throwable throwable);
 
         /**
-         * Adds the specified {@link Callback}.
+         * Adds the specified complete callback.
          * 
-         * @param callback The callback.
+         * @param callback The complete callback.
          */
-        void addCallback(Callback<? super V> callback);
+        void addCallback(Callback<T> callback);
     }
 
     /**
@@ -123,18 +157,49 @@ public final class Deferred<V> extends AbstractPromise<V> {
      * 
      * @param <V> The value type.
      */
-    private final class PendingState implements State<V> {
+    private final class PendingState implements State<T> {
 
         /**
-         * The completion queue.
+         * The stage queue.
          */
-        private final ConcurrentLinkedQueue<Completion<V>> _completions;
+        private final ConcurrentLinkedQueue<Stage<T>> _stages;
 
         /**
          * Initializes a new instance of the {@link PendingState} class.
          */
         public PendingState() {
-            _completions = new ConcurrentLinkedQueue<Completion<V>>();
+            _stages = new ConcurrentLinkedQueue<Stage<T>>();
+        }
+
+        /**
+         * Changes the state to the specified state.
+         * 
+         * @param state The state.
+         * @return A value indicating whether the state has been changed.
+         */
+        private boolean changeState(final State<T> state) {
+            if (!_state.compareAndSet(this, state)) {
+                return false;
+            }
+            complete(state);
+
+            return true;
+        }
+
+        /**
+         * Adds the specified stage.
+         * 
+         * @param stage The stage.
+         */
+        private void addStage(final Stage<T> stage) {
+            // As the queue is unbounded, this method will never return false.
+            _stages.offer(stage);
+            // Trigger completion when the promise has been completed in the meantime.
+            final State<T> state = _state.get();
+
+            if (state != this) {
+                complete(state);
+            }
         }
 
         /**
@@ -142,76 +207,64 @@ public final class Deferred<V> extends AbstractPromise<V> {
          * 
          * @param state The state.
          */
-        private void complete(final State<V> state) {
-            Completion<V> completion;
+        private void complete(final State<T> state) {
+            Stage<T> stage;
 
-            while ((completion = _completions.poll()) != null) {
-                completion.complete(state);
+            while ((stage = _stages.poll()) != null) {
+                try {
+                    stage.complete(state);
+                } catch (final Throwable t) {
+                    // FIXME Handle error.
+                }
             }
         }
 
         @Override
-        public boolean isCompleted() {
+        public boolean isComplete() {
             return false;
         }
 
         @Override
-        public boolean resolve(final V value) {
-            final ResolvedState<V> state = new ResolvedState<V>(value);
+        public boolean setSuccess(final T value) {
+            final State<T> state = new SuccessState<T>(value);
 
-            if (!_state.compareAndSet(this, state)) {
-                return false;
-            }
-            complete(state);
-
-            return true;
+            return changeState(state);
         }
 
         @Override
-        public boolean reject(final Throwable throwable) {
-            final RejectedState<V> state = new RejectedState<V>(throwable);
+        public boolean setFailure(final Throwable cause) {
+            final State<T> state = new FailureState<T>(cause);
 
-            if (!_state.compareAndSet(this, state)) {
-                return false;
-            }
-            complete(state);
-
-            return true;
+            return changeState(state);
         }
 
         @Override
-        public void addCallback(final Callback<? super V> callback) {
-            final Completion<V> completion = new Completion<V>(callback);
+        public void addCallback(final Callback<T> callback) {
+            final Stage<T> stage = new Stage<T>(callback);
 
-            _completions.offer(completion);
-            // Trigger completion when the promise has been completed in the meantime.
-            final State<V> state = _state.get();
-
-            if (state.isCompleted()) {
-                complete(state);
-            }
+            addStage(stage);
         }
     }
 
     /**
      * Represents the completed state of a {@link Deferred}.
      * 
-     * @param <V> The value type.
+     * @param <T> The value type.
      */
-    private static abstract class CompletedState<V> implements State<V> {
+    private static abstract class CompleteState<T> implements State<T> {
 
         @Override
-        public final boolean isCompleted() {
+        public boolean isComplete() {
             return true;
         }
 
         @Override
-        public final boolean resolve(final V value) {
+        public final boolean setSuccess(final T value) {
             return false;
         }
 
         @Override
-        public final boolean reject(final Throwable throwable) {
+        public final boolean setFailure(final Throwable cause) {
             return false;
         }
     }
@@ -219,68 +272,68 @@ public final class Deferred<V> extends AbstractPromise<V> {
     /**
      * Represents the resolved state of a {@link Deferred}.
      * 
-     * @param <V> The value type.
+     * @param <T> The value type.
      */
-    private static final class ResolvedState<V> extends CompletedState<V> {
+    private static final class SuccessState<T> extends CompleteState<T> {
 
         /**
          * The value.
          */
-        private final V _value;
+        private final T _value;
 
         /**
-         * Initializes a new instance of the {@link ResolvedState} class.
+         * Initializes a new instance of the {@link SuccessState} class.
          * 
          * @param value The value.
          */
-        public ResolvedState(final V value) {
+        public SuccessState(final T value) {
             _value = value;
         }
 
         @Override
-        public void addCallback(final Callback<? super V> callback) {
-            callback.onResolved(_value);
+        public void addCallback(final Callback<T> callback) {
+            callback.onSuccess(_value);
         }
     }
 
     /**
      * Represents the rejected state of a {@link Deferred}.
      * 
-     * @param <V> The value type.
+     * @param <T> The value type.
      */
-    private static final class RejectedState<V> extends CompletedState<V> {
+    private static final class FailureState<T> extends CompleteState<T> {
 
         /**
          * The throwable.
          */
-        private final Throwable _throwable;
+        private final Throwable _cause;
 
         /**
-         * Initializes a new instance of the {@link RejectedState} class.
+         * Initializes a new instance of the {@link FailureState} class.
          * 
-         * @param throwable The throwable.
+         * @param cause The cause.
          */
-        public RejectedState(final Throwable throwable) {
-            _throwable = throwable;
+        public FailureState(final Throwable cause) {
+            _cause = cause;
         }
 
         @Override
-        public void addCallback(final Callback<? super V> callback) {
-            callback.onRejected(_throwable);
+        public void addCallback(final Callback<T> callback) {
+            callback.onFailure(_cause);
         }
     }
 
     /**
-     * Represents a completion.
+     * Represents a complete stage.
      * 
-     * @param <V> The value type.
+     * @param <T> The value type.
      */
-    private static final class Completion<V> {
+    private static final class Stage<T> {
 
         /**
-         * The callback.
+         * The complete callback.
          */
-        private final Callback<? super V> _callback;
+        private final Callback<T> _callback;
 
         /**
          * The completed flag.
@@ -288,11 +341,11 @@ public final class Deferred<V> extends AbstractPromise<V> {
         private final AtomicBoolean _completed;
 
         /**
-         * Initializes a new instance of the {@link Completion} class.
+         * Initializes a new instance of the {@link CompleteStage} class.
          * 
-         * @param callback The callback.
+         * @param callback The complete callback.
          */
-        public Completion(final Callback<? super V> callback) {
+        public Stage(final Callback<T> callback) {
             _callback = callback;
 
             _completed = new AtomicBoolean(false);
@@ -303,7 +356,7 @@ public final class Deferred<V> extends AbstractPromise<V> {
          * 
          * @param state The state.
          */
-        public void complete(final State<V> state) {
+        public void complete(final State<T> state) {
             if (_completed.compareAndSet(false, true)) {
                 state.addCallback(_callback);
             }

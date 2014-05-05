@@ -38,8 +38,8 @@ public final class Promises {
      * 
      * @return A resolved {@link Promise}.
      */
-    public static Promise<Void> resolved() {
-        return resolved(null);
+    public static Promise<Void> success() {
+        return success(null);
     }
 
     /**
@@ -48,42 +48,18 @@ public final class Promises {
      * @param value The value.
      * @return A resolved {@link Promise}.
      */
-    public static <V> Promise<V> resolved(final V value) {
-        return new AbstractPromise<V>() {
-            @Override
-            public boolean isCompleted() {
-                return true;
-            }
-
-            @Override
-            public void addCallback(final Callback<? super V> callback) {
-                callback.onResolved(value);
-            }
-        };
+    public static <T> Promise<T> success(final T value) {
+        return new Deferred<T>(value);
     }
 
     /**
      * Returns a rejected {@link Promise}.
      * 
-     * @param throwable The {@link Throwable}.
+     * @param cause The cause.
      * @return A rejected {@link Promise}.
      */
-    public static <V> Promise<V> rejected(final Throwable throwable) {
-        if (throwable == null) {
-            throw new IllegalArgumentException("Throwable must not be null");
-        }
-
-        return new AbstractPromise<V>() {
-            @Override
-            public boolean isCompleted() {
-                return true;
-            }
-
-            @Override
-            public void addCallback(final Callback<? super V> callback) {
-                callback.onRejected(throwable);
-            }
-        };
+    public static <V> Promise<V> failure(final Throwable cause) {
+        return new Deferred<V>(cause);
     }
 
     /**
@@ -99,7 +75,7 @@ public final class Promises {
 
         final Awaiter<V> awaiter = new Awaiter<V>();
 
-        promise.addCallback(awaiter);
+        promise.then(awaiter);
 
         return new Future<V>() {
             @Override

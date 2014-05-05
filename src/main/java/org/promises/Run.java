@@ -20,9 +20,23 @@ package org.promises;
 /**
  * 
  */
-public interface Callback<T> {
+public abstract class Run<T, R> extends Deferred<R> implements Continuation<T, R> {
 
-    void onSuccess(T value);
+    protected abstract R doRun(T value) throws Exception;
 
-    void onFailure(Throwable cause);
+    @Override
+    public final void onSuccess(final T value) {
+        try {
+            final R result = doRun(value);
+
+            setSuccess(result);
+        } catch (final Throwable t) {
+            setFailure(t);
+        }
+    }
+
+    @Override
+    public final void onFailure(final Throwable cause) {
+        setFailure(cause);
+    }
 }
