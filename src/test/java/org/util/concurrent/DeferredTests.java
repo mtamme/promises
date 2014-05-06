@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.promises;
+package org.util.concurrent;
 
 import static org.junit.Assert.*;
 import static org.easymock.EasyMock.*;

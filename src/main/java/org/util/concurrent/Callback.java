@@ -15,28 +15,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.promises;
+package org.util.concurrent;
 
 /**
  * 
  */
-public abstract class Run<T, R> extends Deferred<R> implements Continuation<T, R> {
+public interface Callback<T> {
 
-    protected abstract R doRun(T value) throws Exception;
+    void onSuccess(T value);
 
-    @Override
-    public final void onSuccess(final T value) {
-        try {
-            final R result = doRun(value);
-
-            setSuccess(result);
-        } catch (final Throwable t) {
-            setFailure(t);
-        }
-    }
-
-    @Override
-    public final void onFailure(final Throwable cause) {
-        setFailure(cause);
-    }
+    void onFailure(Throwable cause);
 }

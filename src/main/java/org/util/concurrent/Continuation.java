@@ -15,14 +15,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.promises;
+package org.util.concurrent;
 
 /**
  * 
  */
-public interface Callback<T> {
+public interface Continuation<T, R> extends Callback<T>, Promise<R> {
 
-    void onSuccess(T value);
-
-    void onFailure(Throwable cause);
 }

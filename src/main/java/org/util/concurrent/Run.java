@@ -15,19 +15,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.promises;
+package org.util.concurrent;
 
 /**
  * 
  */
-public abstract class Finally<T, R> extends Deferred<R> implements Continuation<T, R> {
+public abstract class Run<T, R> extends Deferred<R> implements Continuation<T, R> {
 
-    protected abstract R doFinally(T value, Throwable cause) throws Exception;
+    protected abstract R doRun(T value) throws Exception;
 
     @Override
     public final void onSuccess(final T value) {
         try {
-            final R result = doFinally(value, null);
+            final R result = doRun(value);
 
             setSuccess(result);
         } catch (final Throwable t) {
@@ -37,13 +37,6 @@ public abstract class Finally<T, R> extends Deferred<R> implements Continuation<
 
     @Override
     public final void onFailure(final Throwable cause) {
-        try {
-            final R result = doFinally(null, cause);
-
-            setSuccess(result);
-        } catch (final Throwable t) {
-            t.addSuppressed(cause);
-            setFailure(t);
-        }
+        setFailure(cause);
     }
 }

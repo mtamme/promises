@@ -15,32 +15,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.promises;
+package org.util.concurrent;
 
 /**
  * 
  */
-public abstract class TryCatchFinally<T, R> extends Deferred<R> implements Continuation<T, R> {
+public abstract class RunAsync<T, R> extends Deferred<R> implements Continuation<T, R> {
 
-    protected abstract R doTry(T value) throws Exception;
-
-    protected abstract R doCatch(T value, Throwable cause) throws Exception;
-
-    protected abstract R doFinally(T value) throws Exception;
+    protected abstract Promise<R> doRun(T value) throws Exception;
 
     @Override
     public final void onSuccess(final T value) {
         try {
-            R result;
+            final Promise<R> result = doRun(value);
 
-            try {
-                result = doTry(value);
-            } catch (final Throwable t) {
-                result = doCatch(value, t);
-            } finally {
-                result = doFinally(value);
-            }
-            setSuccess(result);
+            result.then(new Callback<R>() {
+                @Override
+                public void onSuccess(final R value) {
+                    setSuccess(value);
+                }
+
+                @Override
+                public void onFailure(final Throwable cause) {
+                    setFailure(cause);
+                }
+            });
         } catch (final Throwable t) {
             setFailure(t);
         }

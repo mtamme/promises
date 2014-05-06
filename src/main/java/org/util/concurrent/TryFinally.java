@@ -15,11 +15,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.promises;
+package org.util.concurrent;
 
 /**
  * 
  */
-public interface Continuation<T, R> extends Callback<T>, Promise<R> {
+public abstract class TryFinally<T, R> extends Deferred<R> implements Continuation<T, R> {
 
+    protected abstract R doTry(T value) throws Exception;
+
+    protected abstract R doFinally(T value) throws Exception;
+
+    @Override
+    public final void onSuccess(final T value) {
+        try {
+            R result;
+
+            try {
+                result = doTry(value);
+            } finally {
+                result = doFinally(value);
+            }
+            setSuccess(result);
+        } catch (final Throwable t) {
+            setFailure(t);
+        }
+    }
+
+    @Override
+    public final void onFailure(final Throwable cause) {
+        setFailure(cause);
+    }
 }

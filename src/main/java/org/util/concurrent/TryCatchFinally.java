@@ -15,16 +15,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.promises;
+package org.util.concurrent;
 
 /**
  * 
  */
-public abstract class TryCatch<T, R> extends Deferred<R> implements Continuation<T, R> {
+public abstract class TryCatchFinally<T, R> extends Deferred<R> implements Continuation<T, R> {
 
     protected abstract R doTry(T value) throws Exception;
 
     protected abstract R doCatch(T value, Throwable cause) throws Exception;
+
+    protected abstract R doFinally(T value) throws Exception;
 
     @Override
     public final void onSuccess(final T value) {
@@ -35,6 +37,8 @@ public abstract class TryCatch<T, R> extends Deferred<R> implements Continuation
                 result = doTry(value);
             } catch (final Throwable t) {
                 result = doCatch(value, t);
+            } finally {
+                result = doFinally(value);
             }
             setSuccess(result);
         } catch (final Throwable t) {

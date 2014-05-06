@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.promises;
+package org.util.concurrent;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,10 +39,17 @@ public final class SampleTests {
                 // transport.connect();
                 return null;
             }
+        }).then(new Run<Void, Void>() {
+            @Override
+            protected Void doRun(Void value) throws Exception {
+                // manager.start(context);
+                return null;
+            }
         }).then(new Callback<Void>() {
             @Override
             public void onSuccess(final Void value) {
                 // listener.onConnected();
+
             }
 
             @Override
@@ -58,6 +65,7 @@ public final class SampleTests {
         final Deferred<Void> deferred = new Deferred<Void>();
 
         // listener.onDisconnecting();
+        // manager.stop(context);
         // channel.close();
         deferred.then(new Catch<Void>() {
             @Override
@@ -112,6 +120,7 @@ public final class SampleTests {
             @Override
             public void onFailure(final Throwable cause) {
                 // listener.onError();
+                // manager.stop(context);
             }
         });
 
