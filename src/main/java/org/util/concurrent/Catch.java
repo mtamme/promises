@@ -23,6 +23,12 @@ package org.util.concurrent;
  */
 public abstract class Catch<T> implements Continuation<T, T> {
 
+    /**
+     * 
+     * @param cause
+     * @return
+     * @throws Exception
+     */
     protected abstract T doCatch(Throwable cause) throws Exception;
 
     @Override

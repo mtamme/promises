@@ -23,6 +23,11 @@ package org.util.concurrent;
  */
 public abstract class OnSuccess<T> implements Continuation<T, T> {
 
+    /**
+     * 
+     * @param value
+     * @throws Exception
+     */
     protected abstract void onSuccess(T value) throws Exception;
 
     @Override

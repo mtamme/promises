@@ -23,9 +23,22 @@ package org.util.concurrent;
  */
 public interface Promise<T> {
 
+    /**
+     * 
+     * @return
+     */
     boolean isComplete();
 
+    /**
+     * 
+     * @param listener
+     */
     void onComplete(CompleteListener<T> listener);
 
+    /**
+     * 
+     * @param continuation
+     * @return
+     */
     <R> Promise<R> then(Continuation<T, R> continuation);
 }

@@ -24,6 +24,13 @@ package org.util.concurrent;
  */
 public abstract class Finally<T, U> implements Continuation<T, U> {
 
+    /**
+     * 
+     * @param value
+     * @param cause
+     * @return
+     * @throws Exception
+     */
     protected abstract U doFinally(T value, Throwable cause) throws Exception;
 
     @Override

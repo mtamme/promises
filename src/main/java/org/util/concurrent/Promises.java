@@ -62,6 +62,10 @@ public final class Promises {
         return new DefaultDeferred<T>(cause);
     }
 
+    /**
+     * 
+     * @return
+     */
     public static <T> Deferred<T> deferred() {
         return new DefaultDeferred<T>();
     }

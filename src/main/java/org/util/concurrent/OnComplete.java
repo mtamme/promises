@@ -23,8 +23,18 @@ package org.util.concurrent;
  */
 public abstract class OnComplete<T> implements Continuation<T, T> {
 
+    /**
+     * 
+     * @param value
+     * @throws Exception
+     */
     protected abstract void onSuccess(T value) throws Exception;
 
+    /**
+     * 
+     * @param cause
+     * @throws Exception
+     */
     protected abstract void onFailure(Throwable cause) throws Exception;
 
     @Override

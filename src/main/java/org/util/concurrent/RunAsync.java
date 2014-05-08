@@ -24,6 +24,12 @@ package org.util.concurrent;
  */
 public abstract class RunAsync<T, U> implements Continuation<T, U> {
 
+    /**
+     * 
+     * @param value
+     * @return
+     * @throws Exception
+     */
     protected abstract Promise<U> doRun(T value) throws Exception;
 
     @Override
