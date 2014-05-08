@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * 
  * @param <T> The value type.
  */
-public class Deferred<T> implements Promise<T> {
+public final class Deferred<T> implements Promise<T>, Completable<T> {
 
     /**
      * The current state of the {@link Deferred}.
@@ -98,25 +98,44 @@ public class Deferred<T> implements Promise<T> {
     }
 
     @Override
-    public final Promise<T> then(final Callback<T> callback) {
-        if (callback == null) {
-            throw new IllegalArgumentException("Callback must not be null");
+    public void onComplete(final CompleteListener<T> listener) {
+        if (listener == null) {
+            throw new IllegalArgumentException("Listener must not be null");
         }
 
-        _state.get().addCallback(callback);
-
-        return this;
+        _state.get().onComplete(listener);
     }
 
     @Override
-    public final <R> Promise<R> then(Continuation<T, R> continuation) {
+    public final <R> Promise<R> then(final Continuation<T, R> continuation) {
         if (continuation == null) {
             throw new IllegalArgumentException("Continuation must not be null");
         }
 
-        _state.get().addCallback(continuation);
+        final Deferred<R> deferred = new Deferred<R>();
 
-        return continuation;
+        onComplete(new CompleteListener<T>() {
+            @Override
+            public void onSuccess(final T value) {
+                try {
+                    continuation.onSuccess(value, deferred);
+                } catch (final Throwable t) {
+                    deferred.setFailure(t);
+                }
+            }
+
+            @Override
+            public void onFailure(final Throwable cause) {
+                try {
+                    continuation.onFailure(cause, deferred);
+                } catch (final Throwable t) {
+                    t.addSuppressed(cause);
+                    deferred.setFailure(t);
+                }
+            }
+        });
+
+        return deferred;
     }
 
     /**
@@ -147,9 +166,9 @@ public class Deferred<T> implements Promise<T> {
         /**
          * Adds the specified complete callback.
          * 
-         * @param callback The complete callback.
+         * @param listener The complete callback.
          */
-        void addCallback(Callback<T> callback);
+        void onComplete(CompleteListener<T> listener);
     }
 
     /**
@@ -239,8 +258,8 @@ public class Deferred<T> implements Promise<T> {
         }
 
         @Override
-        public void addCallback(final Callback<T> callback) {
-            final Stage<T> stage = new Stage<T>(callback);
+        public void onComplete(final CompleteListener<T> listener) {
+            final Stage<T> stage = new Stage<T>(listener);
 
             addStage(stage);
         }
@@ -291,8 +310,8 @@ public class Deferred<T> implements Promise<T> {
         }
 
         @Override
-        public void addCallback(final Callback<T> callback) {
-            callback.onSuccess(_value);
+        public void onComplete(final CompleteListener<T> listener) {
+            listener.onSuccess(_value);
         }
     }
 
@@ -318,8 +337,8 @@ public class Deferred<T> implements Promise<T> {
         }
 
         @Override
-        public void addCallback(final Callback<T> callback) {
-            callback.onFailure(_cause);
+        public void onComplete(final CompleteListener<T> listener) {
+            listener.onFailure(_cause);
         }
     }
 
@@ -333,7 +352,7 @@ public class Deferred<T> implements Promise<T> {
         /**
          * The complete callback.
          */
-        private final Callback<T> _callback;
+        private final CompleteListener<T> _listener;
 
         /**
          * The completed flag.
@@ -343,10 +362,10 @@ public class Deferred<T> implements Promise<T> {
         /**
          * Initializes a new instance of the {@link CompleteStage} class.
          * 
-         * @param callback The complete callback.
+         * @param listener The complete callback.
          */
-        public Stage(final Callback<T> callback) {
-            _callback = callback;
+        public Stage(final CompleteListener<T> listener) {
+            _listener = listener;
 
             _completed = new AtomicBoolean(false);
         }
@@ -358,7 +377,7 @@ public class Deferred<T> implements Promise<T> {
          */
         public void complete(final State<T> state) {
             if (_completed.compareAndSet(false, true)) {
-                state.addCallback(_callback);
+                state.onComplete(_listener);
             }
         }
     }

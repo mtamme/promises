@@ -22,7 +22,9 @@ package org.util.concurrent;
  */
 public interface Callback<T> {
 
-    void onSuccess(T value);
-
-    void onFailure(Throwable cause);
+    /**
+     * 
+     * @param value
+     */
+    void accept(T value);
 }

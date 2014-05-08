@@ -27,7 +27,7 @@ import java.util.concurrent.TimeoutException;
  * 
  * @param <T> The value type.
  */
-final class Awaiter<T> implements Callback<T> {
+final class Awaiter<T> implements CompleteListener<T> {
 
     /**
      * Defines a result.

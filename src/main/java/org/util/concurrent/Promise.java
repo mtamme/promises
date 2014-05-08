@@ -24,7 +24,7 @@ public interface Promise<T> {
 
     boolean isComplete();
 
-    Promise<T> then(Callback<T> callback);
+    void onComplete(CompleteListener<T> listener);
 
     <R> Promise<R> then(Continuation<T, R> continuation);
 }

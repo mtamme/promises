@@ -20,6 +20,19 @@ package org.util.concurrent;
 /**
  * 
  */
-public interface Continuation<T, R> extends Callback<T>, Promise<R> {
+public interface Continuation<T, R> {
 
+    /**
+     * 
+     * @param value
+     * @param completable
+     */
+    void onSuccess(T value, Completable<R> completable);
+
+    /**
+     * 
+     * @param cause
+     * @param completable
+     */
+    void onFailure(Throwable cause, Completable<R> completable);
 }

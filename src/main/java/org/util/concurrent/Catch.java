@@ -20,24 +20,24 @@ package org.util.concurrent;
 /**
  * 
  */
-public abstract class Catch<T> extends Deferred<T> implements Continuation<T, T> {
+public abstract class Catch<T> implements Continuation<T, T> {
 
     protected abstract T doCatch(Throwable cause) throws Exception;
 
     @Override
-    public final void onSuccess(final T value) {
-        setSuccess(value);
+    public final void onSuccess(final T value, final Completable<T> completable) {
+        completable.setSuccess(value);
     }
 
     @Override
-    public final void onFailure(final Throwable cause) {
+    public final void onFailure(final Throwable cause, final Completable<T> completable) {
         try {
             final T value = doCatch(cause);
 
-            setSuccess(value);
+            completable.setSuccess(value);
         } catch (final Throwable t) {
             t.addSuppressed(cause);
-            setFailure(t);
+            completable.setFailure(t);
         }
     }
 }

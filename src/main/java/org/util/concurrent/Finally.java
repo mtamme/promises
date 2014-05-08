@@ -20,30 +20,30 @@ package org.util.concurrent;
 /**
  * 
  */
-public abstract class Finally<T, R> extends Deferred<R> implements Continuation<T, R> {
+public abstract class Finally<T, R> implements Continuation<T, R> {
 
     protected abstract R doFinally(T value, Throwable cause) throws Exception;
 
     @Override
-    public final void onSuccess(final T value) {
+    public final void onSuccess(final T value, final Completable<R> completable) {
         try {
             final R result = doFinally(value, null);
 
-            setSuccess(result);
+            completable.setSuccess(result);
         } catch (final Throwable t) {
-            setFailure(t);
+            completable.setFailure(t);
         }
     }
 
     @Override
-    public final void onFailure(final Throwable cause) {
+    public final void onFailure(final Throwable cause, final Completable<R> completable) {
         try {
             final R result = doFinally(null, cause);
 
-            setSuccess(result);
+            completable.setSuccess(result);
         } catch (final Throwable t) {
             t.addSuppressed(cause);
-            setFailure(t);
+            completable.setFailure(t);
         }
     }
 }

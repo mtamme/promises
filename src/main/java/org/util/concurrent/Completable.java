@@ -20,9 +20,19 @@ package org.util.concurrent;
 /**
  * 
  */
-public abstract class OnFailure<T> implements Callback<T> {
+public interface Completable<T> {
 
-    @Override
-    public final void onSuccess(final T value) {
-    }
+    /**
+     * 
+     * @param value
+     * @return
+     */
+    boolean setSuccess(T value);
+
+    /**
+     * 
+     * @param cause
+     * @return
+     */
+    boolean setFailure(Throwable cause);
 }

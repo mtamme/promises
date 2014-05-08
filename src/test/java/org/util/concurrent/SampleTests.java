@@ -45,15 +45,15 @@ public final class SampleTests {
                 // manager.start(context);
                 return null;
             }
-        }).then(new Callback<Void>() {
+        }).then(new OnComplete<Void>() {
             @Override
-            public void onSuccess(final Void value) {
+            protected void onSuccess(final Void value) {
                 // listener.onConnected();
 
             }
 
             @Override
-            public void onFailure(final Throwable cause) {
+            protected void onFailure(final Throwable cause) {
                 // listener.onError();
                 // listener.onDisconnected();
             }
@@ -79,14 +79,14 @@ public final class SampleTests {
                 // transport.abort();
                 return null;
             }
-        }).then(new Callback<Void>() {
+        }).then(new OnComplete<Void>() {
             @Override
-            public void onSuccess(final Void value) {
+            protected void onSuccess(final Void value) {
                 // listener.onDisconnected();
             }
 
             @Override
-            public void onFailure(final Throwable cause) {
+            protected void onFailure(final Throwable cause) {
                 // listener.onError();
                 // listener.onDisconnected();
             }
@@ -111,14 +111,14 @@ public final class SampleTests {
                 // transport.reconnect();
                 return null;
             }
-        }).then(new Callback<Void>() {
+        }).then(new OnComplete<Void>() {
             @Override
-            public void onSuccess(final Void value) {
+            protected void onSuccess(final Void value) {
                 // listener.onReconnected();
             }
 
             @Override
-            public void onFailure(final Throwable cause) {
+            protected void onFailure(final Throwable cause) {
                 // listener.onError();
                 // manager.stop(context);
             }

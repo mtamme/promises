@@ -20,17 +20,30 @@ package org.util.concurrent;
 /**
  * 
  */
-public abstract class OnComplete<T> implements Callback<T> {
+public abstract class OnComplete<T> implements Continuation<T, T> {
 
-    protected abstract void onComplete(T value, Throwable cause);
+    protected abstract void onSuccess(T value);
+
+    protected abstract void onFailure(Throwable cause);
 
     @Override
-    public final void onSuccess(final T value) {
-        onComplete(value, null);
+    public final void onSuccess(final T value, final Completable<T> completable) {
+        try {
+            onSuccess(value);
+            completable.setSuccess(value);
+        } catch (final Throwable t) {
+            completable.setFailure(t);
+        }
     }
 
     @Override
-    public final void onFailure(final Throwable cause) {
-        onComplete(null, cause);
+    public final void onFailure(final Throwable cause, final Completable<T> completable) {
+        try {
+            onFailure(cause);
+            completable.setFailure(cause);
+        } catch (final Throwable t) {
+            t.addSuppressed(cause);
+            completable.setFailure(t);
+        }
     }
 }

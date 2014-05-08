@@ -68,7 +68,7 @@ public final class DeferredTests {
     public void resolveWithAddCallbackTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> onSuccess = createStrictMock(Callback.class);
+        final OnComplete<Integer> onSuccess = createStrictMock(OnComplete.class);
 
         onSuccess.onSuccess(1);
         replay(onSuccess);
@@ -116,7 +116,7 @@ public final class DeferredTests {
     public void rejectWithAddCallbackTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> callback = createStrictMock(Callback.class);
+        final OnComplete<Integer> callback = createStrictMock(OnComplete.class);
         final Throwable cause = new Throwable();
 
         callback.onFailure(cause);
@@ -138,7 +138,7 @@ public final class DeferredTests {
     public void addCallbackWithPendingTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> onSuccess = createStrictMock(Callback.class);
+        final OnComplete<Integer> onSuccess = createStrictMock(OnComplete.class);
 
         replay(onSuccess);
         final Deferred<Integer> deferred = new Deferred<Integer>();
@@ -154,7 +154,7 @@ public final class DeferredTests {
     public void addCallbackWithResolvedTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> onSuccess = createStrictMock(Callback.class);
+        final OnComplete<Integer> onSuccess = createStrictMock(OnComplete.class);
 
         onSuccess.onSuccess(1);
         replay(onSuccess);
@@ -173,7 +173,7 @@ public final class DeferredTests {
     public void addCallbackWithRejectedTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> callback = createStrictMock(Callback.class);
+        final OnComplete<Integer> callback = createStrictMock(OnComplete.class);
         final Throwable cause = new Throwable();
 
         callback.onFailure(cause);

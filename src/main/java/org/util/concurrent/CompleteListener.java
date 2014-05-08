@@ -20,9 +20,17 @@ package org.util.concurrent;
 /**
  * 
  */
-public abstract class OnSuccess<T> implements Callback<T> {
+public interface CompleteListener<T> {
 
-    @Override
-    public final void onFailure(final Throwable cause) {
-    }
+    /**
+     * 
+     * @param value
+     */
+    void onSuccess(T value);
+
+    /**
+     * 
+     * @param cause
+     */
+    void onFailure(Throwable cause);
 }
