@@ -47,13 +47,13 @@ public final class SampleTests {
             }
         }).then(new OnComplete<Void>() {
             @Override
-            protected void onSuccess(final Void value) {
+            protected void onSuccess(final Void value) throws Exception {
                 // listener.onConnected();
 
             }
 
             @Override
-            protected void onFailure(final Throwable cause) {
+            protected void onFailure(final Throwable cause) throws Exception {
                 // listener.onError();
                 // listener.onDisconnected();
             }
@@ -81,12 +81,12 @@ public final class SampleTests {
             }
         }).then(new OnComplete<Void>() {
             @Override
-            protected void onSuccess(final Void value) {
+            protected void onSuccess(final Void value) throws Exception {
                 // listener.onDisconnected();
             }
 
             @Override
-            protected void onFailure(final Throwable cause) {
+            protected void onFailure(final Throwable cause) throws Exception {
                 // listener.onError();
                 // listener.onDisconnected();
             }
@@ -113,12 +113,12 @@ public final class SampleTests {
             }
         }).then(new OnComplete<Void>() {
             @Override
-            protected void onSuccess(final Void value) {
+            protected void onSuccess(final Void value) throws Exception {
                 // listener.onReconnected();
             }
 
             @Override
-            protected void onFailure(final Throwable cause) {
+            protected void onFailure(final Throwable cause) throws Exception {
                 // listener.onError();
                 // manager.stop(context);
             }
