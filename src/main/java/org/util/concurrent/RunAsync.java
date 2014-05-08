@@ -19,34 +19,32 @@ package org.util.concurrent;
 
 /**
  * 
+ * @param <T>
+ * @param <U>
  */
-public abstract class RunAsync<T, R> implements Continuation<T, R> {
+public abstract class RunAsync<T, U> implements Continuation<T, U> {
 
-    protected abstract Promise<R> doRun(T value) throws Exception;
+    protected abstract Promise<U> doRun(T value) throws Exception;
 
     @Override
-    public final void onSuccess(final T value, final Completable<R> completable) {
-        try {
-            final Promise<R> result = doRun(value);
+    public final void onSuccess(final T value, final Deferred<U> deferred) throws Exception {
+        final Promise<U> result = doRun(value);
 
-            result.onComplete(new CompleteListener<R>() {
-                @Override
-                public void onSuccess(final R value) {
-                    completable.setSuccess(value);
-                }
+        result.onComplete(new CompleteListener<U>() {
+            @Override
+            public void onSuccess(final U value) {
+                deferred.setSuccess(value);
+            }
 
-                @Override
-                public void onFailure(final Throwable cause) {
-                    completable.setFailure(cause);
-                }
-            });
-        } catch (final Throwable t) {
-            completable.setFailure(t);
-        }
+            @Override
+            public void onFailure(final Throwable cause) {
+                deferred.setFailure(cause);
+            }
+        });
     }
 
     @Override
-    public final void onFailure(final Throwable cause, final Completable<R> completable) {
-        completable.setFailure(cause);
+    public final void onFailure(final Throwable cause, final Deferred<U> deferred) throws Exception {
+        deferred.setFailure(cause);
     }
 }

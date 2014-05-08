@@ -19,20 +19,20 @@ package org.util.concurrent;
 
 /**
  * 
+ * @param <T>
  */
-public interface Completable<T> {
+public abstract class OnSuccess<T> implements Continuation<T, T> {
 
-    /**
-     * 
-     * @param value
-     * @return
-     */
-    boolean setSuccess(T value);
+    protected abstract void onSuccess(T value) throws Exception;
 
-    /**
-     * 
-     * @param cause
-     * @return
-     */
-    boolean setFailure(Throwable cause);
+    @Override
+    public final void onSuccess(final T value, final Deferred<T> deferred) throws Exception {
+        onSuccess(value);
+        deferred.setSuccess(value);
+    }
+
+    @Override
+    public final void onFailure(final Throwable cause, final Deferred<T> deferred) throws Exception {
+        deferred.setFailure(cause);
+    }
 }

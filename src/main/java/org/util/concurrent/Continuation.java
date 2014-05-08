@@ -19,20 +19,22 @@ package org.util.concurrent;
 
 /**
  * 
+ * @param <T>
+ * @param <U>
  */
-public interface Continuation<T, R> {
+public interface Continuation<T, U> {
 
     /**
      * 
      * @param value
-     * @param completable
+     * @param deferred
      */
-    void onSuccess(T value, Completable<R> completable);
+    void onSuccess(T value, Deferred<U> deferred) throws Exception;
 
     /**
      * 
      * @param cause
-     * @param completable
+     * @param deferred
      */
-    void onFailure(Throwable cause, Completable<R> completable);
+    void onFailure(Throwable cause, Deferred<U> deferred) throws Exception;
 }

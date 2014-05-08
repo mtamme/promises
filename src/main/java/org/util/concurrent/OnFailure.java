@@ -19,12 +19,20 @@ package org.util.concurrent;
 
 /**
  * 
+ * @param <T>
  */
-public interface Callback<T> {
+public abstract class OnFailure<T> implements Continuation<T, T> {
 
-    /**
-     * 
-     * @param value
-     */
-    void accept(T value);
+    protected abstract void onFailure(Throwable cause) throws Exception;
+
+    @Override
+    public final void onSuccess(final T value, final Deferred<T> deferred) throws Exception {
+        deferred.setSuccess(value);
+    }
+
+    @Override
+    public final void onFailure(final Throwable cause, final Deferred<T> deferred) throws Exception {
+        onFailure(cause);
+        deferred.setFailure(cause);
+    }
 }

@@ -19,6 +19,7 @@ package org.util.concurrent;
 
 /**
  * 
+ * @param <T>
  */
 public interface Promise<T> {
 

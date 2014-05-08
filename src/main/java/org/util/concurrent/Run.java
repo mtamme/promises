@@ -19,24 +19,22 @@ package org.util.concurrent;
 
 /**
  * 
+ * @param <T>
+ * @param <U>
  */
-public abstract class Run<T, R> implements Continuation<T, R> {
+public abstract class Run<T, U> implements Continuation<T, U> {
 
-    protected abstract R doRun(T value) throws Exception;
+    protected abstract U doRun(T value) throws Exception;
 
     @Override
-    public final void onSuccess(final T value, final Completable<R> completable) {
-        try {
-            final R result = doRun(value);
+    public final void onSuccess(final T value, final Deferred<U> deferred) throws Exception {
+        final U result = doRun(value);
 
-            completable.setSuccess(result);
-        } catch (final Throwable t) {
-            completable.setFailure(t);
-        }
+        deferred.setSuccess(result);
     }
 
     @Override
-    public final void onFailure(final Throwable cause, final Completable<R> completable) {
-        completable.setFailure(cause);
+    public final void onFailure(final Throwable cause, final Deferred<U> deferred) throws Exception {
+        deferred.setFailure(cause);
     }
 }

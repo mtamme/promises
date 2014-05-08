@@ -29,7 +29,7 @@ public final class SampleTests {
 
     @Test
     public void startTest() {
-        final Deferred<Void> deferred = new Deferred<Void>();
+        final Deferred<Void> deferred = Promises.deferred();
 
         // listener.onConnecting();
         // transport.negotiate();
@@ -62,7 +62,7 @@ public final class SampleTests {
 
     @Test
     public void stopTest() {
-        final Deferred<Void> deferred = new Deferred<Void>();
+        final Deferred<Void> deferred = Promises.deferred();
 
         // listener.onDisconnecting();
         // manager.stop(context);
@@ -95,7 +95,7 @@ public final class SampleTests {
 
     @Test
     public void reconnectTest() {
-        final Deferred<Void> deferred = new Deferred<Void>();
+        final Deferred<Void> deferred = Promises.deferred();
 
         // listener.onReconnecting();
         // channel.close();

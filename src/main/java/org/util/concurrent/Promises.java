@@ -49,7 +49,7 @@ public final class Promises {
      * @return A resolved {@link Promise}.
      */
     public static <T> Promise<T> success(final T value) {
-        return new Deferred<T>(value);
+        return new DefaultDeferred<T>(value);
     }
 
     /**
@@ -58,8 +58,12 @@ public final class Promises {
      * @param cause The cause.
      * @return A rejected {@link Promise}.
      */
-    public static <V> Promise<V> failure(final Throwable cause) {
-        return new Deferred<V>(cause);
+    public static <T> Promise<T> failure(final Throwable cause) {
+        return new DefaultDeferred<T>(cause);
+    }
+
+    public static <T> Deferred<T> deferred() {
+        return new DefaultDeferred<T>();
     }
 
     /**
@@ -68,16 +72,16 @@ public final class Promises {
      * @param promise The promise.
      * @return The future.
      */
-    public static <V> Future<V> toFuture(final Promise<V> promise) {
+    public static <T> Future<T> toFuture(final Promise<T> promise) {
         if (promise == null) {
             throw new IllegalArgumentException("Promise must not be null");
         }
 
-        final Awaiter<V> awaiter = new Awaiter<V>();
+        final Awaiter<T> awaiter = new Awaiter<T>();
 
         promise.onComplete(awaiter);
 
-        return new Future<V>() {
+        return new Future<T>() {
             @Override
             public boolean cancel(final boolean mayInterruptIfRunning) {
                 return false;
@@ -94,12 +98,12 @@ public final class Promises {
             }
 
             @Override
-            public V get() throws InterruptedException, ExecutionException {
+            public T get() throws InterruptedException, ExecutionException {
                 return awaiter.get();
             }
 
             @Override
-            public V get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+            public T get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
                 return awaiter.get(timeout, unit);
             }
         };

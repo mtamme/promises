@@ -19,31 +19,23 @@ package org.util.concurrent;
 
 /**
  * 
+ * @param <T>
  */
 public abstract class OnComplete<T> implements Continuation<T, T> {
 
-    protected abstract void onSuccess(T value);
+    protected abstract void onSuccess(T value) throws Exception;
 
-    protected abstract void onFailure(Throwable cause);
+    protected abstract void onFailure(Throwable cause) throws Exception;
 
     @Override
-    public final void onSuccess(final T value, final Completable<T> completable) {
-        try {
-            onSuccess(value);
-            completable.setSuccess(value);
-        } catch (final Throwable t) {
-            completable.setFailure(t);
-        }
+    public final void onSuccess(final T value, final Deferred<T> deferred) throws Exception {
+        onSuccess(value);
+        deferred.setSuccess(value);
     }
 
     @Override
-    public final void onFailure(final Throwable cause, final Completable<T> completable) {
-        try {
-            onFailure(cause);
-            completable.setFailure(cause);
-        } catch (final Throwable t) {
-            t.addSuppressed(cause);
-            completable.setFailure(t);
-        }
+    public final void onFailure(final Throwable cause, final Deferred<T> deferred) throws Exception {
+        onFailure(cause);
+        deferred.setFailure(cause);
     }
 }

@@ -59,14 +59,14 @@ public final class PromisesTests {
     public void addCallbackWithResolvedTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final OnComplete<Integer> callback = createStrictMock(OnComplete.class);
+        final CompleteListener<Integer> callback = createStrictMock(CompleteListener.class);
 
         callback.onSuccess(1);
         replay(callback);
         final Promise<Integer> promise = Promises.success(1);
 
         // Act
-        promise.then(callback);
+        promise.onComplete(callback);
 
         // Assert
         verify(callback);
@@ -76,7 +76,7 @@ public final class PromisesTests {
     public void addCallbackWithRejectedTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final OnComplete<Integer> callback = createStrictMock(OnComplete.class);
+        final CompleteListener<Integer> callback = createStrictMock(CompleteListener.class);
         final Throwable cause = new Throwable();
 
         callback.onFailure(cause);
@@ -84,7 +84,7 @@ public final class PromisesTests {
         final Promise<Integer> promise = Promises.failure(cause);
 
         // Act
-        promise.then(callback);
+        promise.onComplete(callback);
 
         // Assert
         verify(callback);
