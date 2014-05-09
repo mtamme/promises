@@ -30,15 +30,15 @@ public final class SampleTests {
 
         // listener.onConnecting();
         // transport.negotiate();
-        deferred.then(new RunAsync<Void, Void>() {
+        deferred.then(new Compose<Void, Void>() {
             @Override
-            protected Promise<Void> doRun(final Void value) throws Exception {
+            protected Promise<Void> doCompose(final Void value) throws Exception {
                 // transport.connect();
                 return null;
             }
-        }).then(new Run<Void, Void>() {
+        }).then(new Apply<Void, Void>() {
             @Override
-            protected Void doRun(Void value) throws Exception {
+            protected Void doApply(Void value) throws Exception {
                 // manager.start(context);
                 return null;
             }
@@ -70,9 +70,9 @@ public final class SampleTests {
                 // listener.onError();
                 return null;
             }
-        }).then(new RunAsync<Void, Void>() {
+        }).then(new Compose<Void, Void>() {
             @Override
-            protected Promise<Void> doRun(final Void value) throws Exception {
+            protected Promise<Void> doCompose(final Void value) throws Exception {
                 // transport.abort();
                 return null;
             }
@@ -102,9 +102,9 @@ public final class SampleTests {
                 // listener.onError();
                 return null;
             }
-        }).then(new RunAsync<Void, Void>() {
+        }).then(new Compose<Void, Void>() {
             @Override
-            protected Promise<Void> doRun(final Void value) throws Exception {
+            protected Promise<Void> doCompose(final Void value) throws Exception {
                 // transport.reconnect();
                 return null;
             }
