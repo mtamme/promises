@@ -21,12 +21,20 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Represents a default deferred.
  * 
  * @param <T> The value type.
  */
 final class DefaultDeferred<T> implements Deferred<T> {
+
+    /**
+     * The private logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(DefaultDeferred.class);
 
     /**
      * The state of the deferred.
@@ -228,7 +236,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
                 try {
                     stage.complete(state);
                 } catch (final Throwable t) {
-                    // FIXME Handle error.
+                    logger.warn("Failed to complete stage", t);
                 }
             }
         }
