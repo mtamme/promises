@@ -25,14 +25,14 @@ package org.util.concurrent;
 public interface Callback<T> {
 
     /**
-     * Invoked when the promise succeeded with the specified value.
+     * Invoked when the promise completed with the specified value.
      * 
      * @param value The value.
      */
     void onSuccess(T value);
 
     /**
-     * Invoked when the promise failed with the specified cause.
+     * Invoked when the promise completed with the specified cause.
      * 
      * @param cause The cause.
      */

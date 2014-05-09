@@ -35,24 +35,14 @@ public abstract class RunAsync<T, U> implements Continuation<T, U> {
     protected abstract Promise<U> doRun(T value) throws Exception;
 
     @Override
-    public final void onSuccess(final T value, final Deferred<U> result) throws Exception {
+    public final void setSuccess(final T value, final Deferred<U> result) throws Exception {
         final Promise<U> newValue = doRun(value);
 
-        newValue.then(new Callback<U>() {
-            @Override
-            public void onSuccess(final U value) {
-                result.setSuccess(value);
-            }
-
-            @Override
-            public void onFailure(final Throwable cause) {
-                result.setFailure(cause);
-            }
-        });
+        newValue.then(result);
     }
 
     @Override
-    public final void onFailure(final Throwable cause, final Deferred<U> result) throws Exception {
+    public final void setFailure(final Throwable cause, final Deferred<U> result) throws Exception {
         result.setFailure(cause);
     }
 }

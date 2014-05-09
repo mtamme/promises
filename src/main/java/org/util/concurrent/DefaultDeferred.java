@@ -77,6 +77,16 @@ final class DefaultDeferred<T> implements Deferred<T> {
     }
 
     @Override
+    public void onSuccess(final T value) {
+        setSuccess(value);
+    }
+
+    @Override
+    public void onFailure(final Throwable cause) {
+        setFailure(cause);
+    }
+
+    @Override
     public final boolean setSuccess(final T value) {
         return _state.get().setSuccess(value);
     }
@@ -116,7 +126,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
             @Override
             public void onSuccess(final T value) {
                 try {
-                    continuation.onSuccess(value, deferred);
+                    continuation.setSuccess(value, deferred);
                 } catch (final Throwable t) {
                     deferred.setFailure(t);
                 }
@@ -125,7 +135,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
             @Override
             public void onFailure(final Throwable cause) {
                 try {
-                    continuation.onFailure(cause, deferred);
+                    continuation.setFailure(cause, deferred);
                 } catch (final Throwable t) {
                     t.addSuppressed(cause);
                     deferred.setFailure(t);
@@ -151,7 +161,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
         boolean isComplete();
 
         /**
-         * Succeeds the deferred with the specified value.
+         * Completes the deferred with the specified value.
          * 
          * @param value The value.
          * @return A value indicating whether the deferred has been completed.
@@ -159,7 +169,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
         boolean setSuccess(T value);
 
         /**
-         * Fails the deferred with the specified cause.
+         * Completes the deferred with the specified cause.
          * 
          * @param cause The cause.
          * @return A value indicating whether the deferred has been completed.
@@ -203,7 +213,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
             if (!_state.compareAndSet(this, state)) {
                 return false;
             }
-            complete(state);
+            completeStages(state);
 
             return true;
         }
@@ -220,16 +230,16 @@ final class DefaultDeferred<T> implements Deferred<T> {
             final State<T> state = _state.get();
 
             if (state != this) {
-                complete(state);
+                completeStages(state);
             }
         }
 
         /**
-         * Completes the deferred with the specified state.
+         * Completes the stages with the specified state.
          * 
          * @param state The state.
          */
-        private void complete(final State<T> state) {
+        private void completeStages(final State<T> state) {
             Stage<T> stage;
 
             while ((stage = _stages.poll()) != null) {

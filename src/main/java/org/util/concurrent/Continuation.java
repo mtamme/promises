@@ -26,20 +26,20 @@ package org.util.concurrent;
 public interface Continuation<T, U> {
 
     /**
-     * Invoked when a promise succeeded with the specified value.
+     * Completes the continuation with the specified value.
      * 
      * @param value The value.
      * @param result The result.
      * @throws Exception
      */
-    void onSuccess(T value, Deferred<U> result) throws Exception;
+    void setSuccess(T value, Deferred<U> result) throws Exception;
 
     /**
-     * Invoked when a promise failed with the specified cause.
+     * Completes the continuation with the specified cause.
      * 
      * @param cause The cause.
      * @param result The result.
      * @throws Exception
      */
-    void onFailure(Throwable cause, Deferred<U> result) throws Exception;
+    void setFailure(Throwable cause, Deferred<U> result) throws Exception;
 }

@@ -22,10 +22,10 @@ package org.util.concurrent;
  * 
  * @param <T> The value type.
  */
-public interface Deferred<T> extends Promise<T> {
+public interface Deferred<T> extends Promise<T>, Callback<T> {
 
     /**
-     * Succeeds the deferred with the specified value.
+     * Completes the deferred with the specified value.
      * 
      * @param value The value.
      * @return A value indicating whether the deferred has been completed.
@@ -33,7 +33,7 @@ public interface Deferred<T> extends Promise<T> {
     boolean setSuccess(T value);
 
     /**
-     * Fails the deferred with the specified cause.
+     * Completes the deferred with the specified cause.
      * 
      * @param cause The cause.
      * @return A value indicating whether the deferred has been completed.
