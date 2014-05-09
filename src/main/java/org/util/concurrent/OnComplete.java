@@ -30,7 +30,9 @@ public abstract class OnComplete<T> implements Continuation<T, T> {
      * @param value The value.
      * @throws Exception
      */
-    protected abstract void onSuccess(T value) throws Exception;
+    protected void onSuccess(final T value) throws Exception {
+        onComplete(value, null);
+    }
 
     /**
      * Handles the failure continuation.
@@ -38,7 +40,18 @@ public abstract class OnComplete<T> implements Continuation<T, T> {
      * @param cause The cause.
      * @throws Exception
      */
-    protected abstract void onFailure(Throwable cause) throws Exception;
+    protected void onFailure(final Throwable cause) throws Exception {
+        onComplete(null, cause);
+    }
+
+    /**
+     * Handles the complete continuation.
+     * 
+     * @param cause The cause.
+     * @throws Exception
+     */
+    protected void onComplete(final T value, final Throwable cause) throws Exception {
+    }
 
     @Override
     public final void setSuccess(final T value, final Deferred<T> result) throws Exception {
