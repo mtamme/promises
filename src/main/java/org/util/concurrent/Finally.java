@@ -36,16 +36,16 @@ public abstract class Finally<T, U> implements ThenCallback<T, U> {
     protected abstract U doFinally(T value, Throwable cause) throws Exception;
 
     @Override
-    public final void onSuccess(final T value, final Deferred<U> deferred) throws Exception {
-        final U result = doFinally(value, null);
+    public final void onSuccess(final T value, final Deferred<U> result) throws Exception {
+        final U newValue = doFinally(value, null);
 
-        deferred.setSuccess(result);
+        result.setSuccess(newValue);
     }
 
     @Override
-    public final void onFailure(final Throwable cause, final Deferred<U> deferred) throws Exception {
-        final U result = doFinally(null, cause);
+    public final void onFailure(final Throwable cause, final Deferred<U> result) throws Exception {
+        final U newValue = doFinally(null, cause);
 
-        deferred.setSuccess(result);
+        result.setSuccess(newValue);
     }
 }

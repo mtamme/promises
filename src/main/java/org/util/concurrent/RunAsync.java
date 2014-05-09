@@ -35,24 +35,24 @@ public abstract class RunAsync<T, U> implements ThenCallback<T, U> {
     protected abstract Promise<U> doRun(T value) throws Exception;
 
     @Override
-    public final void onSuccess(final T value, final Deferred<U> deferred) throws Exception {
-        final Promise<U> result = doRun(value);
+    public final void onSuccess(final T value, final Deferred<U> result) throws Exception {
+        final Promise<U> newValue = doRun(value);
 
-        result.onComplete(new CompleteCallback<U>() {
+        newValue.onComplete(new CompleteCallback<U>() {
             @Override
             public void onSuccess(final U value) {
-                deferred.setSuccess(value);
+                result.setSuccess(value);
             }
 
             @Override
             public void onFailure(final Throwable cause) {
-                deferred.setFailure(cause);
+                result.setFailure(cause);
             }
         });
     }
 
     @Override
-    public final void onFailure(final Throwable cause, final Deferred<U> deferred) throws Exception {
-        deferred.setFailure(cause);
+    public final void onFailure(final Throwable cause, final Deferred<U> result) throws Exception {
+        result.setFailure(cause);
     }
 }

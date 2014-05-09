@@ -34,14 +34,14 @@ public abstract class Catch<T> implements ThenCallback<T, T> {
     protected abstract T doCatch(Throwable cause) throws Exception;
 
     @Override
-    public final void onSuccess(final T value, final Deferred<T> deferred) throws Exception {
-        deferred.setSuccess(value);
+    public final void onSuccess(final T value, final Deferred<T> result) throws Exception {
+        result.setSuccess(value);
     }
 
     @Override
-    public final void onFailure(final Throwable cause, final Deferred<T> deferred) throws Exception {
+    public final void onFailure(final Throwable cause, final Deferred<T> result) throws Exception {
         final T value = doCatch(cause);
 
-        deferred.setSuccess(value);
+        result.setSuccess(value);
     }
 }

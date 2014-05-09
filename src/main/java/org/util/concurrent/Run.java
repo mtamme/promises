@@ -35,14 +35,14 @@ public abstract class Run<T, U> implements ThenCallback<T, U> {
     protected abstract U doRun(T value) throws Exception;
 
     @Override
-    public final void onSuccess(final T value, final Deferred<U> deferred) throws Exception {
-        final U result = doRun(value);
+    public final void onSuccess(final T value, final Deferred<U> result) throws Exception {
+        final U newValue = doRun(value);
 
-        deferred.setSuccess(result);
+        result.setSuccess(newValue);
     }
 
     @Override
-    public final void onFailure(final Throwable cause, final Deferred<U> deferred) throws Exception {
-        deferred.setFailure(cause);
+    public final void onFailure(final Throwable cause, final Deferred<U> result) throws Exception {
+        result.setFailure(cause);
     }
 }

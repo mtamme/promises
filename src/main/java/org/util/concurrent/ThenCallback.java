@@ -29,15 +29,15 @@ public interface ThenCallback<T, U> {
      * Invoked when a promise succeeded with the specified value.
      * 
      * @param value The value.
-     * @param deferred The deferred result.
+     * @param result The deferred result.
      */
-    void onSuccess(T value, Deferred<U> deferred) throws Exception;
+    void onSuccess(T value, Deferred<U> result) throws Exception;
 
     /**
      * Invoked when a promise failed with the specified cause.
      * 
      * @param cause The failure cause.
-     * @param deferred The deferred result.
+     * @param result The deferred result.
      */
-    void onFailure(Throwable cause, Deferred<U> deferred) throws Exception;
+    void onFailure(Throwable cause, Deferred<U> result) throws Exception;
 }

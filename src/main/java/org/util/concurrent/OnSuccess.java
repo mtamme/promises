@@ -33,13 +33,13 @@ public abstract class OnSuccess<T> implements ThenCallback<T, T> {
     protected abstract void onSuccess(T value) throws Exception;
 
     @Override
-    public final void onSuccess(final T value, final Deferred<T> deferred) throws Exception {
+    public final void onSuccess(final T value, final Deferred<T> result) throws Exception {
         onSuccess(value);
-        deferred.setSuccess(value);
+        result.setSuccess(value);
     }
 
     @Override
-    public final void onFailure(final Throwable cause, final Deferred<T> deferred) throws Exception {
-        deferred.setFailure(cause);
+    public final void onFailure(final Throwable cause, final Deferred<T> result) throws Exception {
+        result.setFailure(cause);
     }
 }
