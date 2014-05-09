@@ -18,19 +18,19 @@
 package org.util.concurrent;
 
 /**
- * Represents a run callback.
+ * Represents a run continuation.
  * 
  * @param <T> The value type.
  * @param <U> The result type.
  */
-public abstract class Run<T, U> implements ThenCallback<T, U> {
+public abstract class Run<T, U> implements Continuation<T, U> {
 
     /**
-     * Handles the run callback.
+     * Handles the run continuation.
      * 
      * @param value The value.
      * @return The result.
-     * @throws Exception The exception.
+     * @throws Exception
      */
     protected abstract U doRun(T value) throws Exception;
 

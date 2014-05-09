@@ -68,7 +68,7 @@ public final class DefaultDeferredTests {
     public void setSuccessWithThenTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final CompleteCallback<Integer> onSuccess = createStrictMock(CompleteCallback.class);
+        final Callback<Integer> onSuccess = createStrictMock(Callback.class);
 
         onSuccess.onSuccess(1);
         replay(onSuccess);
@@ -116,7 +116,7 @@ public final class DefaultDeferredTests {
     public void setFailureWithThenTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final CompleteCallback<Integer> callback = createStrictMock(CompleteCallback.class);
+        final Callback<Integer> callback = createStrictMock(Callback.class);
         final Throwable cause = new Throwable();
 
         callback.onFailure(cause);
@@ -138,7 +138,7 @@ public final class DefaultDeferredTests {
     public void thenWithPendingTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final CompleteCallback<Integer> onSuccess = createStrictMock(CompleteCallback.class);
+        final Callback<Integer> onSuccess = createStrictMock(Callback.class);
 
         replay(onSuccess);
         final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
@@ -154,7 +154,7 @@ public final class DefaultDeferredTests {
     public void thenWithSucceededTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final CompleteCallback<Integer> onSuccess = createStrictMock(CompleteCallback.class);
+        final Callback<Integer> onSuccess = createStrictMock(Callback.class);
 
         onSuccess.onSuccess(1);
         replay(onSuccess);
@@ -173,7 +173,7 @@ public final class DefaultDeferredTests {
     public void thenWithFailedTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final CompleteCallback<Integer> callback = createStrictMock(CompleteCallback.class);
+        final Callback<Integer> callback = createStrictMock(Callback.class);
         final Throwable cause = new Throwable();
 
         callback.onFailure(cause);

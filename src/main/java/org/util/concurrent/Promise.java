@@ -32,17 +32,17 @@ public interface Promise<T> {
     boolean isComplete();
 
     /**
-     * Adds a complete callback.
+     * Adds the specified callback.
      * 
      * @param callback The callback.
      */
-    void then(CompleteCallback<T> callback);
+    void then(Callback<T> callback);
 
     /**
-     * Adds a then callback.
+     * Adds the specified continuation.
      * 
-     * @param callback The callback.
-     * @return The promised result.
+     * @param callback The continuation.
+     * @return The result.
      */
-    <R> Promise<R> then(ThenCallback<T, R> callback);
+    <R> Promise<R> then(Continuation<T, R> callback);
 }

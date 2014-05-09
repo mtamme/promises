@@ -18,11 +18,11 @@
 package org.util.concurrent;
 
 /**
- * Defines a complete callback.
+ * Defines a callback.
  * 
  * @param <T> The value type.
  */
-public interface CompleteCallback<T> {
+public interface Callback<T> {
 
     /**
      * Invoked when the promise succeeded with the specified value.

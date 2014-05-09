@@ -18,26 +18,28 @@
 package org.util.concurrent;
 
 /**
- * Defines a then callback.
+ * Defines a continuation.
  * 
  * @param <T> The value type.
  * @param <U> The result type.
  */
-public interface ThenCallback<T, U> {
+public interface Continuation<T, U> {
 
     /**
      * Invoked when a promise succeeded with the specified value.
      * 
      * @param value The value.
-     * @param result The deferred result.
+     * @param result The result.
+     * @throws Exception
      */
     void onSuccess(T value, Deferred<U> result) throws Exception;
 
     /**
      * Invoked when a promise failed with the specified cause.
      * 
-     * @param cause The failure cause.
-     * @param result The deferred result.
+     * @param cause The cause.
+     * @param result The result.
+     * @throws Exception
      */
     void onFailure(Throwable cause, Deferred<U> result) throws Exception;
 }

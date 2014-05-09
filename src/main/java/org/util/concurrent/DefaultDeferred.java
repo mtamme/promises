@@ -96,7 +96,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
     }
 
     @Override
-    public void then(final CompleteCallback<T> callback) {
+    public void then(final Callback<T> callback) {
         if (callback == null) {
             throw new IllegalArgumentException("Callback must not be null");
         }
@@ -105,18 +105,18 @@ final class DefaultDeferred<T> implements Deferred<T> {
     }
 
     @Override
-    public final <R> Promise<R> then(final ThenCallback<T, R> callback) {
-        if (callback == null) {
-            throw new IllegalArgumentException("Callback must not be null");
+    public final <R> Promise<R> then(final Continuation<T, R> continuation) {
+        if (continuation == null) {
+            throw new IllegalArgumentException("Continuation must not be null");
         }
 
         final Deferred<R> deferred = new DefaultDeferred<R>();
 
-        _state.get().then(new CompleteCallback<T>() {
+        _state.get().then(new Callback<T>() {
             @Override
             public void onSuccess(final T value) {
                 try {
-                    callback.onSuccess(value, deferred);
+                    continuation.onSuccess(value, deferred);
                 } catch (final Throwable t) {
                     deferred.setFailure(t);
                 }
@@ -125,7 +125,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
             @Override
             public void onFailure(final Throwable cause) {
                 try {
-                    callback.onFailure(cause, deferred);
+                    continuation.onFailure(cause, deferred);
                 } catch (final Throwable t) {
                     t.addSuppressed(cause);
                     deferred.setFailure(t);
@@ -137,16 +137,16 @@ final class DefaultDeferred<T> implements Deferred<T> {
     }
 
     /**
-     * Defines a deferred state.
+     * Defines a state.
      * 
      * @param <T> The value type.
      */
     private static interface State<T> {
 
         /**
-         * Returns a value indicating whether the promise is complete.
+         * Returns a value indicating whether the deferred is complete.
          * 
-         * @return a value indicating whether the promise is complete.
+         * @return a value indicating whether the deferred is complete.
          */
         boolean isComplete();
 
@@ -154,7 +154,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
          * Succeeds the deferred with the specified value.
          * 
          * @param value The value.
-         * @return A value indicating whether the promise has been completed.
+         * @return A value indicating whether the deferred has been completed.
          */
         boolean setSuccess(T value);
 
@@ -162,16 +162,16 @@ final class DefaultDeferred<T> implements Deferred<T> {
          * Fails the deferred with the specified cause.
          * 
          * @param cause The cause.
-         * @return A value indicating whether the promise has been completed.
+         * @return A value indicating whether the deferred has been completed.
          */
         boolean setFailure(Throwable throwable);
 
         /**
-         * Adds a complete callback.
+         * Adds the specified callback.
          * 
          * @param callback The callback.
          */
-        void then(CompleteCallback<T> callback);
+        void then(Callback<T> callback);
     }
 
     /**
@@ -261,7 +261,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
         }
 
         @Override
-        public void then(final CompleteCallback<T> callback) {
+        public void then(final Callback<T> callback) {
             final Stage<T> stage = new Stage<T>(callback);
 
             addStage(stage);
@@ -313,7 +313,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
         }
 
         @Override
-        public void then(final CompleteCallback<T> callback) {
+        public void then(final Callback<T> callback) {
             callback.onSuccess(_value);
         }
     }
@@ -340,7 +340,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
         }
 
         @Override
-        public void then(final CompleteCallback<T> callback) {
+        public void then(final Callback<T> callback) {
             callback.onFailure(_cause);
         }
     }
@@ -353,9 +353,9 @@ final class DefaultDeferred<T> implements Deferred<T> {
     private static final class Stage<T> {
 
         /**
-         * The complete callback.
+         * The callback.
          */
-        private final CompleteCallback<T> _callback;
+        private final Callback<T> _callback;
 
         /**
          * A value indicating whether the stage completed.
@@ -367,7 +367,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
          * 
          * @param callback The callback.
          */
-        public Stage(final CompleteCallback<T> callback) {
+        public Stage(final Callback<T> callback) {
             _callback = callback;
 
             _completed = new AtomicBoolean(false);

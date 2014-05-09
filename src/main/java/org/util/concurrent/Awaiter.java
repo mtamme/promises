@@ -23,11 +23,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Represents a complete callback which can be awaited.
+ * Represents a callback which can be awaited.
  * 
  * @param <T> The value type.
  */
-final class Awaiter<T> implements CompleteCallback<T> {
+final class Awaiter<T> implements Callback<T> {
 
     /**
      * Defines a value.

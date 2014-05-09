@@ -28,7 +28,7 @@ public interface Deferred<T> extends Promise<T> {
      * Succeeds the deferred with the specified value.
      * 
      * @param value The value.
-     * @return A value indicating whether the promise has been completed.
+     * @return A value indicating whether the deferred has been completed.
      */
     boolean setSuccess(T value);
 
@@ -36,7 +36,7 @@ public interface Deferred<T> extends Promise<T> {
      * Fails the deferred with the specified cause.
      * 
      * @param cause The cause.
-     * @return A value indicating whether the promise has been completed.
+     * @return A value indicating whether the deferred has been completed.
      */
     boolean setFailure(Throwable cause);
 }

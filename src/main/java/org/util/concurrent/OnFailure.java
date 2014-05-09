@@ -18,17 +18,17 @@
 package org.util.concurrent;
 
 /**
- * Represents a failure callback.
+ * Represents a failure continuation.
  * 
  * @param <T> The value type.
  */
-public abstract class OnFailure<T> implements ThenCallback<T, T> {
+public abstract class OnFailure<T> implements Continuation<T, T> {
 
     /**
-     * Handles the failure callback.
+     * Handles the failure continuation.
      * 
      * @param cause The cause.
-     * @throws Exception The exception.
+     * @throws Exception
      */
     protected abstract void onFailure(Throwable cause) throws Exception;
 

@@ -59,7 +59,7 @@ public final class PromisesTests {
     public void thenWithSucceededTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final CompleteCallback<Integer> callback = createStrictMock(CompleteCallback.class);
+        final Callback<Integer> callback = createStrictMock(Callback.class);
 
         callback.onSuccess(1);
         replay(callback);
@@ -76,7 +76,7 @@ public final class PromisesTests {
     public void thenWithFailedTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final CompleteCallback<Integer> callback = createStrictMock(CompleteCallback.class);
+        final Callback<Integer> callback = createStrictMock(Callback.class);
         final Throwable cause = new Throwable();
 
         callback.onFailure(cause);
