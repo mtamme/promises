@@ -22,14 +22,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Represents a deferred.
  * 
  * @param <T> The value type.
  */
 final class DefaultDeferred<T> implements Deferred<T> {
 
     /**
-     * The current state of the {@link DefaultDeferred}.
+     * The state of the deferred.
      */
     private final AtomicReference<State<T>> _state;
 
@@ -68,22 +67,12 @@ final class DefaultDeferred<T> implements Deferred<T> {
         _state = new AtomicReference<State<T>>(initialState);
     }
 
-    /**
-     * Tries to resolves the {@link DefaultDeferred} with the specified value.
-     * 
-     * @param value The value.
-     * @return A value indicating whether the {@link DefaultDeferred} was resolved.
-     */
+    @Override
     public final boolean setSuccess(final T value) {
         return _state.get().setSuccess(value);
     }
 
-    /**
-     * Tries to rejects the {@link DefaultDeferred} with the specified throwable.
-     * 
-     * @param cause The cause.
-     * @return A value indicating whether the {@link DefaultDeferred} was rejected.
-     */
+    @Override
     public final boolean setFailure(final Throwable cause) {
         if (cause == null) {
             throw new IllegalArgumentException("Cause must not be null");
@@ -139,7 +128,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
     }
 
     /**
-     * Defines a state of a {@link DefaultDeferred}.
+     * Defines a state.
      * 
      * @param <T> The value type.
      */
@@ -148,31 +137,28 @@ final class DefaultDeferred<T> implements Deferred<T> {
         boolean isComplete();
 
         /**
-         * Tries to resolves the {@link DefaultDeferred} with the specified value.
          * 
-         * @param value The value.
-         * @return A value indicating whether the {@link DefaultDeferred} was resolved.
+         * @param value
+         * @return
          */
         boolean setSuccess(T value);
 
         /**
-         * Tries to rejects the {@link DefaultDeferred} with the specified throwable.
          * 
-         * @param throwable The throwable.
-         * @return A value indicating whether the {@link DefaultDeferred} was rejected.
+         * @param throwable
+         * @return
          */
         boolean setFailure(Throwable throwable);
 
         /**
-         * Adds the specified complete callback.
          * 
-         * @param listener The complete callback.
+         * @param listener
          */
         void onComplete(CompleteListener<T> listener);
     }
 
     /**
-     * Represents the pending state of a {@link DefaultDeferred}.
+     * Represents the pending state of a deferred.
      * 
      * @param <V> The value type.
      */
@@ -206,9 +192,8 @@ final class DefaultDeferred<T> implements Deferred<T> {
         }
 
         /**
-         * Adds the specified stage.
          * 
-         * @param stage The stage.
+         * @param stage
          */
         private void addStage(final Stage<T> stage) {
             // As the queue is unbounded, this method will never return false.
@@ -222,9 +207,8 @@ final class DefaultDeferred<T> implements Deferred<T> {
         }
 
         /**
-         * Triggers completion with the specified state.
          * 
-         * @param state The state.
+         * @param state
          */
         private void complete(final State<T> state) {
             Stage<T> stage;
@@ -266,7 +250,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
     }
 
     /**
-     * Represents the completed state of a {@link DefaultDeferred}.
+     * Represents a complete state.
      * 
      * @param <T> The value type.
      */
@@ -289,7 +273,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
     }
 
     /**
-     * Represents the resolved state of a {@link DefaultDeferred}.
+     * Represents a success state.
      * 
      * @param <T> The value type.
      */
@@ -316,7 +300,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
     }
 
     /**
-     * Represents the rejected state of a {@link DefaultDeferred}.
+     * Represents a failure state.
      * 
      * @param <T> The value type.
      */
@@ -343,26 +327,26 @@ final class DefaultDeferred<T> implements Deferred<T> {
     }
 
     /**
-     * Represents a complete stage.
+     * Represents a stage.
      * 
      * @param <T> The value type.
      */
     private static final class Stage<T> {
 
         /**
-         * The complete callback.
+         * The complete listener.
          */
         private final CompleteListener<T> _listener;
 
         /**
-         * The completed flag.
+         * A value indicating whether the stage completed..
          */
         private final AtomicBoolean _completed;
 
         /**
-         * Initializes a new instance of the {@link CompleteStage} class.
+         * Initializes a new instance of the {@link Stage} class.
          * 
-         * @param listener The complete callback.
+         * @param listener The complete listener.
          */
         public Stage(final CompleteListener<T> listener) {
             _listener = listener;
@@ -371,9 +355,8 @@ final class DefaultDeferred<T> implements Deferred<T> {
         }
 
         /**
-         * Triggers completion with the specified state.
          * 
-         * @param state The state.
+         * @param state
          */
         public void complete(final State<T> state) {
             if (_completed.compareAndSet(false, true)) {

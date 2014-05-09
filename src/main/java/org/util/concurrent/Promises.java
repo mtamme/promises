@@ -34,29 +34,26 @@ public final class Promises {
     }
 
     /**
-     * Returns a resolved {@link Promise}.
      * 
-     * @return A resolved {@link Promise}.
+     * @return
      */
     public static Promise<Void> success() {
         return success(null);
     }
 
     /**
-     * Returns a resolved {@link Promise}.
      * 
-     * @param value The value.
-     * @return A resolved {@link Promise}.
+     * @param value
+     * @return
      */
     public static <T> Promise<T> success(final T value) {
         return new DefaultDeferred<T>(value);
     }
 
     /**
-     * Returns a rejected {@link Promise}.
      * 
-     * @param cause The cause.
-     * @return A rejected {@link Promise}.
+     * @param cause
+     * @return
      */
     public static <T> Promise<T> failure(final Throwable cause) {
         return new DefaultDeferred<T>(cause);
@@ -71,10 +68,9 @@ public final class Promises {
     }
 
     /**
-     * Returns a {@link Future} for the specified {@link Promise}.
      * 
-     * @param promise The promise.
-     * @return The future.
+     * @param promise
+     * @return
      */
     public static <T> Future<T> toFuture(final Promise<T> promise) {
         if (promise == null) {
@@ -98,7 +94,7 @@ public final class Promises {
 
             @Override
             public boolean isDone() {
-                return awaiter.isCompleted();
+                return awaiter.isComplete();
             }
 
             @Override

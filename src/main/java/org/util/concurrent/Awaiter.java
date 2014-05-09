@@ -23,14 +23,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Represents a {@link Callback} which can be awaited.
+ * Represents a complete listener which can be awaited.
  * 
  * @param <T> The value type.
  */
 final class Awaiter<T> implements CompleteListener<T> {
 
     /**
-     * Defines a result.
+     * Defines a value.
      * 
      * @param <V> The value type.
      */
@@ -45,12 +45,12 @@ final class Awaiter<T> implements CompleteListener<T> {
     }
 
     /**
-     * The completion count down.
+     * The count down latch.
      */
-    private final CountDownLatch _completion;
+    private final CountDownLatch _latch;
 
     /**
-     * The result.
+     * The value.
      */
     private Value<T> _value;
 
@@ -58,18 +58,17 @@ final class Awaiter<T> implements CompleteListener<T> {
      * Initializes a new instance of the {@link Awaiter} class.
      */
     public Awaiter() {
-        _completion = new CountDownLatch(1);
+        _latch = new CountDownLatch(1);
 
         _value = null;
     }
 
     /**
-     * Returns a value indicating whether a {@link Promise} completed.
      * 
-     * @return A value indicating whether a {@link Promise} completed.
+     * @return
      */
-    public boolean isCompleted() {
-        final long count = _completion.getCount();
+    public boolean isComplete() {
+        final long count = _latch.getCount();
 
         return (count == 0);
     }
@@ -82,7 +81,7 @@ final class Awaiter<T> implements CompleteListener<T> {
      * @throws ExecutionException
      */
     public T get() throws InterruptedException, ExecutionException {
-        _completion.await();
+        _latch.await();
 
         return _value.get();
     }
@@ -98,7 +97,7 @@ final class Awaiter<T> implements CompleteListener<T> {
      * @throws TimeoutException
      */
     public T get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        if (!_completion.await(timeout, unit)) {
+        if (!_latch.await(timeout, unit)) {
             throw new TimeoutException("A timeout occured while waiting for completion");
         }
 
@@ -113,7 +112,7 @@ final class Awaiter<T> implements CompleteListener<T> {
                 return value;
             }
         };
-        _completion.countDown();
+        _latch.countDown();
     }
 
     @Override
@@ -124,6 +123,6 @@ final class Awaiter<T> implements CompleteListener<T> {
                 throw new ExecutionException(cause);
             }
         };
-        _completion.countDown();
+        _latch.countDown();
     }
 }
