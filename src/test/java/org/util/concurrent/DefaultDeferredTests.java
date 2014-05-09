@@ -38,12 +38,12 @@ public final class DefaultDeferredTests {
     }
 
     @Test
-    public void setSuccessTest() {
+    public void trySuccessTest() {
         // Arrange
         final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
         // Act
-        final boolean success = deferred.setSuccess(1);
+        final boolean success = deferred.trySuccess(1);
 
         // Assert
         assertTrue(success);
@@ -51,13 +51,13 @@ public final class DefaultDeferredTests {
     }
 
     @Test
-    public void setSuccessWithFailedTest() {
+    public void trySuccessWithSetFailureTest() {
         // Arrange
         final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
         // Act
         deferred.setFailure(new Throwable());
-        final boolean success = deferred.setSuccess(1);
+        final boolean success = deferred.trySuccess(1);
 
         // Assert
         assertFalse(success);
@@ -65,22 +65,22 @@ public final class DefaultDeferredTests {
     }
 
     @Test
-    public void setSuccessWithThenTest() {
+    public void trySuccessWithThenTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> onSuccess = createStrictMock(Callback.class);
+        final Completable<Integer> completable = createStrictMock(Completable.class);
 
-        onSuccess.onSuccess(1);
-        replay(onSuccess);
+        completable.setSuccess(1);
+        replay(completable);
         final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
-        deferred.then(onSuccess);
+        deferred.then(completable);
 
         // Act
-        final boolean success = deferred.setSuccess(1);
+        final boolean success = deferred.trySuccess(1);
 
         // Assert
-        verify(onSuccess);
+        verify(completable);
         assertTrue(success);
         assertTrue(deferred.isComplete());
     }
@@ -91,7 +91,7 @@ public final class DefaultDeferredTests {
         final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
         // Act
-        final boolean failure = deferred.setFailure(new Throwable());
+        final boolean failure = deferred.tryFailure(new Throwable());
 
         // Assert
         assertTrue(failure);
@@ -99,13 +99,13 @@ public final class DefaultDeferredTests {
     }
 
     @Test
-    public void setFailureWithSucceededTest() {
+    public void setFailureWithSetSuccessTest() {
         // Arrange
         final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
         // Act
         deferred.setSuccess(1);
-        final boolean failure = deferred.setFailure(new Throwable());
+        final boolean failure = deferred.tryFailure(new Throwable());
 
         // Assert
         assertFalse(failure);
@@ -116,76 +116,76 @@ public final class DefaultDeferredTests {
     public void setFailureWithThenTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> callback = createStrictMock(Callback.class);
+        final Completable<Integer> completable = createStrictMock(Completable.class);
         final Throwable cause = new Throwable();
 
-        callback.onFailure(cause);
-        replay(callback);
+        completable.setFailure(cause);
+        replay(completable);
         final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
-        deferred.then(callback);
+        deferred.then(completable);
 
         // Act
-        final boolean failure = deferred.setFailure(cause);
+        final boolean failure = deferred.tryFailure(cause);
 
         // Assert
-        verify(callback);
+        verify(completable);
         assertTrue(failure);
         assertTrue(deferred.isComplete());
     }
 
     @Test
-    public void thenWithPendingTest() {
+    public void thenTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> onSuccess = createStrictMock(Callback.class);
+        final Completable<Integer> completable = createStrictMock(Completable.class);
 
-        replay(onSuccess);
+        replay(completable);
         final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
         // Act
-        deferred.then(onSuccess);
+        deferred.then(completable);
 
         // Assert
-        verify(onSuccess);
+        verify(completable);
     }
 
     @Test
-    public void thenWithSucceededTest() {
+    public void thenWithSetSuccessTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> onSuccess = createStrictMock(Callback.class);
+        final Completable<Integer> completable = createStrictMock(Completable.class);
 
-        onSuccess.onSuccess(1);
-        replay(onSuccess);
+        completable.setSuccess(1);
+        replay(completable);
         final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
         deferred.setSuccess(1);
 
         // Act
-        deferred.then(onSuccess);
+        deferred.then(completable);
 
         // Assert
-        verify(onSuccess);
+        verify(completable);
     }
 
     @Test
-    public void thenWithFailedTest() {
+    public void thenWithSetFailureTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> callback = createStrictMock(Callback.class);
+        final Completable<Integer> completable = createStrictMock(Completable.class);
         final Throwable cause = new Throwable();
 
-        callback.onFailure(cause);
-        replay(callback);
+        completable.setFailure(cause);
+        replay(completable);
         final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
         deferred.setFailure(cause);
 
         // Act
-        deferred.then(callback);
+        deferred.then(completable);
 
         // Assert
-        verify(callback);
+        verify(completable);
     }
 }

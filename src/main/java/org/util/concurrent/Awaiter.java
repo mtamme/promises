@@ -23,11 +23,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Represents a callback which can be awaited.
+ * Represents a completable which can be awaited.
  * 
  * @param <T> The value type.
  */
-final class Awaiter<T> implements Callback<T> {
+final class Awaiter<T> implements Completable<T> {
 
     /**
      * Defines a value.
@@ -106,7 +106,7 @@ final class Awaiter<T> implements Callback<T> {
     }
 
     @Override
-    public void onSuccess(final T value) {
+    public void setSuccess(final T value) {
         _value = new Value<T>() {
             @Override
             public T get() throws ExecutionException {
@@ -117,7 +117,7 @@ final class Awaiter<T> implements Callback<T> {
     }
 
     @Override
-    public void onFailure(final Throwable cause) {
+    public void setFailure(final Throwable cause) {
         _value = new Value<T>() {
             @Override
             public T get() throws ExecutionException {

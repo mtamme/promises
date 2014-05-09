@@ -18,23 +18,25 @@
 package org.util.concurrent;
 
 /**
- * Defines a callback.
+ * Defines a completable.
  * 
  * @param <T> The value type.
  */
-public interface Callback<T> {
+public interface Completable<T> {
 
     /**
-     * Invoked when the promise completed with the specified value.
+     * Completes the completable with the specified value.
      * 
      * @param value The value.
+     * @throws IllegalStateException
      */
-    void onSuccess(T value);
+    void setSuccess(T value);
 
     /**
-     * Invoked when the promise completed with the specified cause.
+     * Completes the completable with the specified cause.
      * 
      * @param cause The cause.
+     * @throws IllegalStateException
      */
-    void onFailure(Throwable cause);
+    void setFailure(Throwable cause);
 }

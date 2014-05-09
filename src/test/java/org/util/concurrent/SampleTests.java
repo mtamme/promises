@@ -121,6 +121,6 @@ public final class SampleTests {
             }
         });
 
-        deferred.setFailure(new Exception());
+        deferred.tryFailure(new Exception());
     }
 }

@@ -59,35 +59,35 @@ public final class PromisesTests {
     public void thenWithNewSuccessTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> callback = createStrictMock(Callback.class);
+        final Completable<Integer> completable = createStrictMock(Completable.class);
 
-        callback.onSuccess(1);
-        replay(callback);
+        completable.setSuccess(1);
+        replay(completable);
         final Promise<Integer> promise = Promises.newSuccess(1);
 
         // Act
-        promise.then(callback);
+        promise.then(completable);
 
         // Assert
-        verify(callback);
+        verify(completable);
     }
 
     @Test
     public void thenWithNewFailureTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final Callback<Integer> callback = createStrictMock(Callback.class);
+        final Completable<Integer> completable = createStrictMock(Completable.class);
         final Throwable cause = new Throwable();
 
-        callback.onFailure(cause);
-        replay(callback);
+        completable.setFailure(cause);
+        replay(completable);
         final Promise<Integer> promise = Promises.newFailure(cause);
 
         // Act
-        promise.then(callback);
+        promise.then(completable);
 
         // Assert
-        verify(callback);
+        verify(completable);
     }
 
     @Test

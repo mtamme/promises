@@ -77,22 +77,26 @@ final class DefaultDeferred<T> implements Deferred<T> {
     }
 
     @Override
-    public void onSuccess(final T value) {
-        setSuccess(value);
+    public void setSuccess(final T value) {
+        if (!trySuccess(value)) {
+            throw new IllegalStateException("Deferred is already completed");
+        }
     }
 
     @Override
-    public void onFailure(final Throwable cause) {
-        setFailure(cause);
+    public void setFailure(final Throwable cause) {
+        if (!tryFailure(cause)) {
+            throw new IllegalStateException("Deferred is already completed");
+        }
     }
 
     @Override
-    public final boolean setSuccess(final T value) {
+    public final boolean trySuccess(final T value) {
         return _state.get().setSuccess(value);
     }
 
     @Override
-    public final boolean setFailure(final Throwable cause) {
+    public final boolean tryFailure(final Throwable cause) {
         if (cause == null) {
             throw new IllegalArgumentException("Cause must not be null");
         }
@@ -106,12 +110,12 @@ final class DefaultDeferred<T> implements Deferred<T> {
     }
 
     @Override
-    public void then(final Callback<T> callback) {
-        if (callback == null) {
-            throw new IllegalArgumentException("Callback must not be null");
+    public void then(final Completable<T> completable) {
+        if (completable == null) {
+            throw new IllegalArgumentException("Completable must not be null");
         }
 
-        _state.get().then(callback);
+        _state.get().then(completable);
     }
 
     @Override
@@ -122,23 +126,23 @@ final class DefaultDeferred<T> implements Deferred<T> {
 
         final Deferred<R> deferred = new DefaultDeferred<R>();
 
-        _state.get().then(new Callback<T>() {
+        _state.get().then(new Completable<T>() {
             @Override
-            public void onSuccess(final T value) {
+            public void setSuccess(final T value) {
                 try {
                     continuation.setSuccess(value, deferred);
                 } catch (final Throwable t) {
-                    deferred.setFailure(t);
+                    deferred.tryFailure(t);
                 }
             }
 
             @Override
-            public void onFailure(final Throwable cause) {
+            public void setFailure(final Throwable cause) {
                 try {
                     continuation.setFailure(cause, deferred);
                 } catch (final Throwable t) {
                     t.addSuppressed(cause);
-                    deferred.setFailure(t);
+                    deferred.tryFailure(t);
                 }
             }
         });
@@ -177,11 +181,11 @@ final class DefaultDeferred<T> implements Deferred<T> {
         boolean setFailure(Throwable throwable);
 
         /**
-         * Adds the specified callback.
+         * Adds the specified completable.
          * 
-         * @param callback The callback.
+         * @param completable The completable.
          */
-        void then(Callback<T> callback);
+        void then(Completable<T> completable);
     }
 
     /**
@@ -271,8 +275,8 @@ final class DefaultDeferred<T> implements Deferred<T> {
         }
 
         @Override
-        public void then(final Callback<T> callback) {
-            final Stage<T> stage = new Stage<T>(callback);
+        public void then(final Completable<T> completable) {
+            final Stage<T> stage = new Stage<T>(completable);
 
             addStage(stage);
         }
@@ -323,8 +327,8 @@ final class DefaultDeferred<T> implements Deferred<T> {
         }
 
         @Override
-        public void then(final Callback<T> callback) {
-            callback.onSuccess(_value);
+        public void then(final Completable<T> completable) {
+            completable.setSuccess(_value);
         }
     }
 
@@ -350,8 +354,8 @@ final class DefaultDeferred<T> implements Deferred<T> {
         }
 
         @Override
-        public void then(final Callback<T> callback) {
-            callback.onFailure(_cause);
+        public void then(final Completable<T> completable) {
+            completable.setFailure(_cause);
         }
     }
 
@@ -363,9 +367,9 @@ final class DefaultDeferred<T> implements Deferred<T> {
     private static final class Stage<T> {
 
         /**
-         * The callback.
+         * The completable.
          */
-        private final Callback<T> _callback;
+        private final Completable<T> _completable;
 
         /**
          * A value indicating whether the stage completed.
@@ -375,10 +379,10 @@ final class DefaultDeferred<T> implements Deferred<T> {
         /**
          * Initializes a new instance of the {@link Stage} class.
          * 
-         * @param callback The callback.
+         * @param completable The completable.
          */
-        public Stage(final Callback<T> callback) {
-            _callback = callback;
+        public Stage(final Completable<T> completable) {
+            _completable = completable;
 
             _completed = new AtomicBoolean(false);
         }
@@ -390,7 +394,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
          */
         public void complete(final State<T> state) {
             if (_completed.compareAndSet(false, true)) {
-                state.then(_callback);
+                state.then(_completable);
             }
         }
     }
