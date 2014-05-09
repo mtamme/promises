@@ -18,22 +18,25 @@
 package org.util.concurrent;
 
 /**
+ * Defines a deferred value.
  * 
- * @param <T>
+ * @param <T> The value type.
  */
 public interface Deferred<T> extends Promise<T> {
 
     /**
+     * Succeeds the deferred with the specified value.
      * 
-     * @param value
-     * @return
+     * @param value The value.
+     * @return A value indicating whether the promise has been completed.
      */
     boolean setSuccess(T value);
 
     /**
+     * Fails the deferred with the specified cause.
      * 
-     * @param cause
-     * @return
+     * @param cause The cause.
+     * @return A value indicating whether the promise has been completed.
      */
     boolean setFailure(Throwable cause);
 }

@@ -23,18 +23,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Represents a complete listener which can be awaited.
+ * Represents a complete callback which can be awaited.
  * 
  * @param <T> The value type.
  */
-final class Awaiter<T> implements CompleteListener<T> {
+final class Awaiter<T> implements CompleteCallback<T> {
 
     /**
      * Defines a value.
      * 
      * @param <V> The value type.
      */
-    private interface Value<V> {
+    private static interface Value<V> {
         /**
          * Returns the value.
          * 
@@ -64,8 +64,9 @@ final class Awaiter<T> implements CompleteListener<T> {
     }
 
     /**
+     * Returns a value indicating whether the awaiter is complete.
      * 
-     * @return
+     * @return A value indicating whether the awaiter is complete.
      */
     public boolean isComplete() {
         final long count = _latch.getCount();

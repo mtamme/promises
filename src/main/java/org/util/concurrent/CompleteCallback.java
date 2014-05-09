@@ -18,20 +18,23 @@
 package org.util.concurrent;
 
 /**
+ * Defines a complete callback.
  * 
- * @param <T>
+ * @param <T> The value type.
  */
-public interface CompleteListener<T> {
+public interface CompleteCallback<T> {
 
     /**
+     * Invoked when the promise succeeded with the specified value.
      * 
-     * @param value
+     * @param value The value.
      */
     void onSuccess(T value);
 
     /**
+     * Invoked when the promise failed with the specified cause.
      * 
-     * @param cause
+     * @param cause The cause.
      */
     void onFailure(Throwable cause);
 }

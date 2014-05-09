@@ -18,18 +18,20 @@
 package org.util.concurrent;
 
 /**
+ * Represents a finally callback.
  * 
- * @param <T>
- * @param <U>
+ * @param <T> The value type.
+ * @param <U> The result type.
  */
-public abstract class Finally<T, U> implements Continuation<T, U> {
+public abstract class Finally<T, U> implements ThenCallback<T, U> {
 
     /**
+     * Handles the finally callback.
      * 
-     * @param value
-     * @param cause
-     * @return
-     * @throws Exception
+     * @param value The value.
+     * @param cause The cause.
+     * @return The result.
+     * @throws Exception The exception.
      */
     protected abstract U doFinally(T value, Throwable cause) throws Exception;
 

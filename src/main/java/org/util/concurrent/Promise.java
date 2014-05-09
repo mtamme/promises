@@ -18,27 +18,31 @@
 package org.util.concurrent;
 
 /**
+ * Defines a promised value.
  * 
- * @param <T>
+ * @param <T> The value type.
  */
 public interface Promise<T> {
 
     /**
+     * Returns a value indicating whether the promise is complete.
      * 
-     * @return
+     * @return A value indicating whether the promise is complete.
      */
     boolean isComplete();
 
     /**
+     * Adds a complete callback.
      * 
-     * @param listener
+     * @param callback The callback.
      */
-    void onComplete(CompleteListener<T> listener);
+    void onComplete(CompleteCallback<T> callback);
 
     /**
+     * Adds a then callback.
      * 
-     * @param continuation
-     * @return
+     * @param callback The callback.
+     * @return The promised result.
      */
-    <R> Promise<R> then(Continuation<T, R> continuation);
+    <R> Promise<R> then(ThenCallback<T, R> callback);
 }

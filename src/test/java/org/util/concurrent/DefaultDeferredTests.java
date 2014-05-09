@@ -25,22 +25,22 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public final class DeferredTests {
+public final class DefaultDeferredTests {
 
     @Test
     public void constructorTest() {
         // Arrange
         // Act
-        final Deferred<Integer> deferred = Promises.deferred();
+        final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
         // Assert
         assertFalse(deferred.isComplete());
     }
 
     @Test
-    public void resolveTest() {
+    public void setSuccessTest() {
         // Arrange
-        final Deferred<Integer> deferred = Promises.deferred();
+        final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
         // Act
         final boolean success = deferred.setSuccess(1);
@@ -51,9 +51,9 @@ public final class DeferredTests {
     }
 
     @Test
-    public void resolveWithRejectedTest() {
+    public void setSuccessWithFailedTest() {
         // Arrange
-        final Deferred<Integer> deferred = Promises.deferred();
+        final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
         // Act
         deferred.setFailure(new Throwable());
@@ -65,14 +65,14 @@ public final class DeferredTests {
     }
 
     @Test
-    public void resolveWithAddCallbackTest() {
+    public void setSuccessWithOnCompleteTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final CompleteListener<Integer> onSuccess = createStrictMock(CompleteListener.class);
+        final CompleteCallback<Integer> onSuccess = createStrictMock(CompleteCallback.class);
 
         onSuccess.onSuccess(1);
         replay(onSuccess);
-        final Deferred<Integer> deferred = Promises.deferred();
+        final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
         deferred.onComplete(onSuccess);
 
@@ -86,9 +86,9 @@ public final class DeferredTests {
     }
 
     @Test
-    public void rejectTest() {
+    public void setFailureTest() {
         // Arrange
-        final Deferred<Integer> deferred = Promises.deferred();
+        final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
         // Act
         final boolean failure = deferred.setFailure(new Throwable());
@@ -99,9 +99,9 @@ public final class DeferredTests {
     }
 
     @Test
-    public void rejectWithResolvedTest() {
+    public void setFailureWithSucceededTest() {
         // Arrange
-        final Deferred<Integer> deferred = Promises.deferred();
+        final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
         // Act
         deferred.setSuccess(1);
@@ -113,15 +113,15 @@ public final class DeferredTests {
     }
 
     @Test
-    public void rejectWithAddCallbackTest() {
+    public void setFailureWithOnCompleteTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final CompleteListener<Integer> callback = createStrictMock(CompleteListener.class);
+        final CompleteCallback<Integer> callback = createStrictMock(CompleteCallback.class);
         final Throwable cause = new Throwable();
 
         callback.onFailure(cause);
         replay(callback);
-        final Deferred<Integer> deferred = Promises.deferred();
+        final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
         deferred.onComplete(callback);
 
@@ -135,13 +135,13 @@ public final class DeferredTests {
     }
 
     @Test
-    public void addCallbackWithPendingTest() {
+    public void onCompleteWithPendingTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final CompleteListener<Integer> onSuccess = createStrictMock(CompleteListener.class);
+        final CompleteCallback<Integer> onSuccess = createStrictMock(CompleteCallback.class);
 
         replay(onSuccess);
-        final Deferred<Integer> deferred = Promises.deferred();
+        final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
         // Act
         deferred.onComplete(onSuccess);
@@ -151,14 +151,14 @@ public final class DeferredTests {
     }
 
     @Test
-    public void addCallbackWithResolvedTest() {
+    public void onCompleteWithSucceededTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final CompleteListener<Integer> onSuccess = createStrictMock(CompleteListener.class);
+        final CompleteCallback<Integer> onSuccess = createStrictMock(CompleteCallback.class);
 
         onSuccess.onSuccess(1);
         replay(onSuccess);
-        final Deferred<Integer> deferred = Promises.deferred();
+        final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
         deferred.setSuccess(1);
 
@@ -170,15 +170,15 @@ public final class DeferredTests {
     }
 
     @Test
-    public void addCallbackWithRejectedTest() {
+    public void onCompleteWithFailedTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final CompleteListener<Integer> callback = createStrictMock(CompleteListener.class);
+        final CompleteCallback<Integer> callback = createStrictMock(CompleteCallback.class);
         final Throwable cause = new Throwable();
 
         callback.onFailure(cause);
         replay(callback);
-        final Deferred<Integer> deferred = Promises.deferred();
+        final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
         deferred.setFailure(cause);
 

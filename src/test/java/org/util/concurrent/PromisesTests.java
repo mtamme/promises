@@ -34,10 +34,10 @@ import org.junit.runners.JUnit4;
 public final class PromisesTests {
 
     @Test
-    public void resolvedTest() {
+    public void succeededTest() {
         // Arrange
         // Act
-        final Promise<Integer> promise = Promises.success(1);
+        final Promise<Integer> promise = Promises.succeeded(1);
 
         // Assert
         assertNotNull(promise);
@@ -45,10 +45,10 @@ public final class PromisesTests {
     }
 
     @Test
-    public void rejectedTest() {
+    public void failedTest() {
         // Arrange
         // Act
-        final Promise<Integer> promise = Promises.failure(new Throwable());
+        final Promise<Integer> promise = Promises.failed(new Throwable());
 
         // Assert
         assertNotNull(promise);
@@ -56,14 +56,14 @@ public final class PromisesTests {
     }
 
     @Test
-    public void addCallbackWithResolvedTest() {
+    public void onCompleteWithSucceededTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final CompleteListener<Integer> callback = createStrictMock(CompleteListener.class);
+        final CompleteCallback<Integer> callback = createStrictMock(CompleteCallback.class);
 
         callback.onSuccess(1);
         replay(callback);
-        final Promise<Integer> promise = Promises.success(1);
+        final Promise<Integer> promise = Promises.succeeded(1);
 
         // Act
         promise.onComplete(callback);
@@ -73,15 +73,15 @@ public final class PromisesTests {
     }
 
     @Test
-    public void addCallbackWithRejectedTest() {
+    public void onCompleteWithFailedTest() {
         // Arrange
         @SuppressWarnings("unchecked")
-        final CompleteListener<Integer> callback = createStrictMock(CompleteListener.class);
+        final CompleteCallback<Integer> callback = createStrictMock(CompleteCallback.class);
         final Throwable cause = new Throwable();
 
         callback.onFailure(cause);
         replay(callback);
-        final Promise<Integer> promise = Promises.failure(cause);
+        final Promise<Integer> promise = Promises.failed(cause);
 
         // Act
         promise.onComplete(callback);
@@ -91,9 +91,9 @@ public final class PromisesTests {
     }
 
     @Test
-    public void getWithResolvedAndToFutureTest() throws InterruptedException, ExecutionException {
+    public void getWithSucceededAndToFutureTest() throws InterruptedException, ExecutionException {
         // Arrange
-        final Promise<Integer> promise = Promises.success(1);
+        final Promise<Integer> promise = Promises.succeeded(1);
         final Future<Integer> future = Promises.toFuture(promise);
 
         // Act
@@ -104,9 +104,9 @@ public final class PromisesTests {
     }
 
     @Test(expected = ExecutionException.class)
-    public void getWithRejectedAndToFutureTest() throws InterruptedException, ExecutionException {
+    public void getWithFailedAndToFutureTest() throws InterruptedException, ExecutionException {
         // Arrange
-        final Promise<Integer> promise = Promises.failure(new Throwable());
+        final Promise<Integer> promise = Promises.failed(new Throwable());
         final Future<Integer> future = Promises.toFuture(promise);
 
         // Act
@@ -117,9 +117,9 @@ public final class PromisesTests {
     }
 
     @Test
-    public void getWithResolvedAndToFutureAndTimeoutTest() throws InterruptedException, ExecutionException, TimeoutException {
+    public void getWithSucceededAndToFutureAndTimeoutTest() throws InterruptedException, ExecutionException, TimeoutException {
         // Arrange
-        final Promise<Integer> promise = Promises.success(1);
+        final Promise<Integer> promise = Promises.succeeded(1);
         final Future<Integer> future = Promises.toFuture(promise);
 
         // Act
@@ -130,9 +130,9 @@ public final class PromisesTests {
     }
 
     @Test(expected = ExecutionException.class)
-    public void getWithRejectedAndToFutureAndTimeoutTest() throws InterruptedException, ExecutionException, TimeoutException {
+    public void getWithFailedAndToFutureAndTimeoutTest() throws InterruptedException, ExecutionException, TimeoutException {
         // Arrange
-        final Promise<Integer> promise = Promises.failure(new Throwable());
+        final Promise<Integer> promise = Promises.failed(new Throwable());
         final Future<Integer> future = Promises.toFuture(promise);
 
         // Act

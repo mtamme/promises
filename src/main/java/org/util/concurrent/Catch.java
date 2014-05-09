@@ -18,16 +18,18 @@
 package org.util.concurrent;
 
 /**
+ * Represents a catch callback.
  * 
- * @param <T>
+ * @param <T> The value type.
  */
-public abstract class Catch<T> implements Continuation<T, T> {
+public abstract class Catch<T> implements ThenCallback<T, T> {
 
     /**
+     * Handles the catch callback.
      * 
-     * @param cause
-     * @return
-     * @throws Exception
+     * @param cause The cause.
+     * @return The result.
+     * @throws Exception The exception.
      */
     protected abstract T doCatch(Throwable cause) throws Exception;
 

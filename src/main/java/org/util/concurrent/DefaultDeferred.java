@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * Represents a default deferred.
  * 
  * @param <T> The value type.
  */
@@ -87,27 +88,27 @@ final class DefaultDeferred<T> implements Deferred<T> {
     }
 
     @Override
-    public void onComplete(final CompleteListener<T> listener) {
-        if (listener == null) {
-            throw new IllegalArgumentException("Listener must not be null");
+    public void onComplete(final CompleteCallback<T> callback) {
+        if (callback == null) {
+            throw new IllegalArgumentException("Callback must not be null");
         }
 
-        _state.get().onComplete(listener);
+        _state.get().onComplete(callback);
     }
 
     @Override
-    public final <R> Promise<R> then(final Continuation<T, R> continuation) {
-        if (continuation == null) {
-            throw new IllegalArgumentException("Continuation must not be null");
+    public final <R> Promise<R> then(final ThenCallback<T, R> callback) {
+        if (callback == null) {
+            throw new IllegalArgumentException("Callback must not be null");
         }
 
         final Deferred<R> deferred = new DefaultDeferred<R>();
 
-        _state.get().onComplete(new CompleteListener<T>() {
+        _state.get().onComplete(new CompleteCallback<T>() {
             @Override
             public void onSuccess(final T value) {
                 try {
-                    continuation.onSuccess(value, deferred);
+                    callback.onSuccess(value, deferred);
                 } catch (final Throwable t) {
                     deferred.setFailure(t);
                 }
@@ -116,7 +117,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
             @Override
             public void onFailure(final Throwable cause) {
                 try {
-                    continuation.onFailure(cause, deferred);
+                    callback.onFailure(cause, deferred);
                 } catch (final Throwable t) {
                     t.addSuppressed(cause);
                     deferred.setFailure(t);
@@ -128,37 +129,45 @@ final class DefaultDeferred<T> implements Deferred<T> {
     }
 
     /**
-     * Defines a state.
+     * Defines a deferred state.
      * 
      * @param <T> The value type.
      */
     private static interface State<T> {
 
+        /**
+         * Returns a value indicating whether the promise is complete.
+         * 
+         * @return a value indicating whether the promise is complete.
+         */
         boolean isComplete();
 
         /**
+         * Succeeds the deferred with the specified value.
          * 
-         * @param value
-         * @return
+         * @param value The value.
+         * @return A value indicating whether the promise has been completed.
          */
         boolean setSuccess(T value);
 
         /**
+         * Fails the deferred with the specified cause.
          * 
-         * @param throwable
-         * @return
+         * @param cause The cause.
+         * @return A value indicating whether the promise has been completed.
          */
         boolean setFailure(Throwable throwable);
 
         /**
+         * Adds a complete callback.
          * 
-         * @param listener
+         * @param callback The callback.
          */
-        void onComplete(CompleteListener<T> listener);
+        void onComplete(CompleteCallback<T> callback);
     }
 
     /**
-     * Represents the pending state of a deferred.
+     * Represents a pending state.
      * 
      * @param <V> The value type.
      */
@@ -192,8 +201,9 @@ final class DefaultDeferred<T> implements Deferred<T> {
         }
 
         /**
+         * Adds the specified stage.
          * 
-         * @param stage
+         * @param stage The stage.
          */
         private void addStage(final Stage<T> stage) {
             // As the queue is unbounded, this method will never return false.
@@ -207,8 +217,9 @@ final class DefaultDeferred<T> implements Deferred<T> {
         }
 
         /**
+         * Completes the deferred with the specified state.
          * 
-         * @param state
+         * @param state The state.
          */
         private void complete(final State<T> state) {
             Stage<T> stage;
@@ -242,8 +253,8 @@ final class DefaultDeferred<T> implements Deferred<T> {
         }
 
         @Override
-        public void onComplete(final CompleteListener<T> listener) {
-            final Stage<T> stage = new Stage<T>(listener);
+        public void onComplete(final CompleteCallback<T> callback) {
+            final Stage<T> stage = new Stage<T>(callback);
 
             addStage(stage);
         }
@@ -294,8 +305,8 @@ final class DefaultDeferred<T> implements Deferred<T> {
         }
 
         @Override
-        public void onComplete(final CompleteListener<T> listener) {
-            listener.onSuccess(_value);
+        public void onComplete(final CompleteCallback<T> callback) {
+            callback.onSuccess(_value);
         }
     }
 
@@ -307,7 +318,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
     private static final class FailureState<T> extends CompleteState<T> {
 
         /**
-         * The throwable.
+         * The cause.
          */
         private final Throwable _cause;
 
@@ -321,8 +332,8 @@ final class DefaultDeferred<T> implements Deferred<T> {
         }
 
         @Override
-        public void onComplete(final CompleteListener<T> listener) {
-            listener.onFailure(_cause);
+        public void onComplete(final CompleteCallback<T> callback) {
+            callback.onFailure(_cause);
         }
     }
 
@@ -334,33 +345,34 @@ final class DefaultDeferred<T> implements Deferred<T> {
     private static final class Stage<T> {
 
         /**
-         * The complete listener.
+         * The complete callback.
          */
-        private final CompleteListener<T> _listener;
+        private final CompleteCallback<T> _callback;
 
         /**
-         * A value indicating whether the stage completed..
+         * A value indicating whether the stage completed.
          */
         private final AtomicBoolean _completed;
 
         /**
          * Initializes a new instance of the {@link Stage} class.
          * 
-         * @param listener The complete listener.
+         * @param callback The callback.
          */
-        public Stage(final CompleteListener<T> listener) {
-            _listener = listener;
+        public Stage(final CompleteCallback<T> callback) {
+            _callback = callback;
 
             _completed = new AtomicBoolean(false);
         }
 
         /**
+         * Completes the stage with the specified state.
          * 
-         * @param state
+         * @param state The state.
          */
         public void complete(final State<T> state) {
             if (_completed.compareAndSet(false, true)) {
-                state.onComplete(_listener);
+                state.onComplete(_callback);
             }
         }
     }

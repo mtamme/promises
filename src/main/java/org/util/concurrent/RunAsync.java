@@ -18,17 +18,19 @@
 package org.util.concurrent;
 
 /**
+ * Represents an asynchronous run callback.
  * 
  * @param <T>
  * @param <U>
  */
-public abstract class RunAsync<T, U> implements Continuation<T, U> {
+public abstract class RunAsync<T, U> implements ThenCallback<T, U> {
 
     /**
+     * Handles the asynchronous run callback.
      * 
-     * @param value
-     * @return
-     * @throws Exception
+     * @param value The value.
+     * @return The promised result.
+     * @throws Exception The exception.
      */
     protected abstract Promise<U> doRun(T value) throws Exception;
 
@@ -36,7 +38,7 @@ public abstract class RunAsync<T, U> implements Continuation<T, U> {
     public final void onSuccess(final T value, final Deferred<U> deferred) throws Exception {
         final Promise<U> result = doRun(value);
 
-        result.onComplete(new CompleteListener<U>() {
+        result.onComplete(new CompleteCallback<U>() {
             @Override
             public void onSuccess(final U value) {
                 deferred.setSuccess(value);

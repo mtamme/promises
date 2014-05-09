@@ -34,43 +34,48 @@ public final class Promises {
     }
 
     /**
+     * Returns a succeeded promise.
      * 
-     * @return
+     * @return The succeeded promise.
      */
-    public static Promise<Void> success() {
-        return success(null);
+    public static Promise<Void> succeeded() {
+        return succeeded(null);
     }
 
     /**
+     * Returns a succeeded promise.
      * 
-     * @param value
-     * @return
+     * @param value The value.
+     * @return The succeeded promise.
      */
-    public static <T> Promise<T> success(final T value) {
+    public static <T> Promise<T> succeeded(final T value) {
         return new DefaultDeferred<T>(value);
     }
 
     /**
+     * Returns a failed promise.
      * 
-     * @param cause
-     * @return
+     * @param cause The cause.
+     * @return The failed promise.
      */
-    public static <T> Promise<T> failure(final Throwable cause) {
+    public static <T> Promise<T> failed(final Throwable cause) {
         return new DefaultDeferred<T>(cause);
     }
 
     /**
+     * Returns a deferred.
      * 
-     * @return
+     * @return The deferred.
      */
     public static <T> Deferred<T> deferred() {
         return new DefaultDeferred<T>();
     }
 
     /**
+     * Returns a future for the specified promise.
      * 
-     * @param promise
-     * @return
+     * @param promise The promise.
+     * @return The future.
      */
     public static <T> Future<T> toFuture(final Promise<T> promise) {
         if (promise == null) {

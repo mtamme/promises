@@ -18,15 +18,17 @@
 package org.util.concurrent;
 
 /**
+ * Represents a success callback.
  * 
- * @param <T>
+ * @param <T> The value type.
  */
-public abstract class OnSuccess<T> implements Continuation<T, T> {
+public abstract class OnSuccess<T> implements ThenCallback<T, T> {
 
     /**
+     * Handles the success callback.
      * 
-     * @param value
-     * @throws Exception
+     * @param value The value.
+     * @throws Exception The exception.
      */
     protected abstract void onSuccess(T value) throws Exception;
 
