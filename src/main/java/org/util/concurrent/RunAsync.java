@@ -36,9 +36,9 @@ public abstract class RunAsync<T, U> implements Continuation<T, U> {
 
     @Override
     public final void setSuccess(final T value, final Deferred<U> result) throws Exception {
-        final Promise<U> newValue = doRun(value);
+        final Promise<U> promise = doRun(value);
 
-        newValue.then(result);
+        promise.then(result);
     }
 
     @Override
