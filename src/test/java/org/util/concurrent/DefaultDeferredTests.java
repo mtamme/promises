@@ -65,7 +65,7 @@ public final class DefaultDeferredTests {
     }
 
     @Test
-    public void setSuccessWithOnCompleteTest() {
+    public void setSuccessWithThenTest() {
         // Arrange
         @SuppressWarnings("unchecked")
         final CompleteCallback<Integer> onSuccess = createStrictMock(CompleteCallback.class);
@@ -74,7 +74,7 @@ public final class DefaultDeferredTests {
         replay(onSuccess);
         final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
-        deferred.onComplete(onSuccess);
+        deferred.then(onSuccess);
 
         // Act
         final boolean success = deferred.setSuccess(1);
@@ -113,7 +113,7 @@ public final class DefaultDeferredTests {
     }
 
     @Test
-    public void setFailureWithOnCompleteTest() {
+    public void setFailureWithThenTest() {
         // Arrange
         @SuppressWarnings("unchecked")
         final CompleteCallback<Integer> callback = createStrictMock(CompleteCallback.class);
@@ -123,7 +123,7 @@ public final class DefaultDeferredTests {
         replay(callback);
         final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
-        deferred.onComplete(callback);
+        deferred.then(callback);
 
         // Act
         final boolean failure = deferred.setFailure(cause);
@@ -135,7 +135,7 @@ public final class DefaultDeferredTests {
     }
 
     @Test
-    public void onCompleteWithPendingTest() {
+    public void thenWithPendingTest() {
         // Arrange
         @SuppressWarnings("unchecked")
         final CompleteCallback<Integer> onSuccess = createStrictMock(CompleteCallback.class);
@@ -144,14 +144,14 @@ public final class DefaultDeferredTests {
         final Deferred<Integer> deferred = new DefaultDeferred<Integer>();
 
         // Act
-        deferred.onComplete(onSuccess);
+        deferred.then(onSuccess);
 
         // Assert
         verify(onSuccess);
     }
 
     @Test
-    public void onCompleteWithSucceededTest() {
+    public void thenWithSucceededTest() {
         // Arrange
         @SuppressWarnings("unchecked")
         final CompleteCallback<Integer> onSuccess = createStrictMock(CompleteCallback.class);
@@ -163,14 +163,14 @@ public final class DefaultDeferredTests {
         deferred.setSuccess(1);
 
         // Act
-        deferred.onComplete(onSuccess);
+        deferred.then(onSuccess);
 
         // Assert
         verify(onSuccess);
     }
 
     @Test
-    public void onCompleteWithFailedTest() {
+    public void thenWithFailedTest() {
         // Arrange
         @SuppressWarnings("unchecked")
         final CompleteCallback<Integer> callback = createStrictMock(CompleteCallback.class);
@@ -183,7 +183,7 @@ public final class DefaultDeferredTests {
         deferred.setFailure(cause);
 
         // Act
-        deferred.onComplete(callback);
+        deferred.then(callback);
 
         // Assert
         verify(callback);

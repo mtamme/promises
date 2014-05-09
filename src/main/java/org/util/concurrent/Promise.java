@@ -36,7 +36,7 @@ public interface Promise<T> {
      * 
      * @param callback The callback.
      */
-    void onComplete(CompleteCallback<T> callback);
+    void then(CompleteCallback<T> callback);
 
     /**
      * Adds a then callback.

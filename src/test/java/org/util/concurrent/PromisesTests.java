@@ -56,7 +56,7 @@ public final class PromisesTests {
     }
 
     @Test
-    public void onCompleteWithSucceededTest() {
+    public void thenWithSucceededTest() {
         // Arrange
         @SuppressWarnings("unchecked")
         final CompleteCallback<Integer> callback = createStrictMock(CompleteCallback.class);
@@ -66,14 +66,14 @@ public final class PromisesTests {
         final Promise<Integer> promise = Promises.succeeded(1);
 
         // Act
-        promise.onComplete(callback);
+        promise.then(callback);
 
         // Assert
         verify(callback);
     }
 
     @Test
-    public void onCompleteWithFailedTest() {
+    public void thenWithFailedTest() {
         // Arrange
         @SuppressWarnings("unchecked")
         final CompleteCallback<Integer> callback = createStrictMock(CompleteCallback.class);
@@ -84,7 +84,7 @@ public final class PromisesTests {
         final Promise<Integer> promise = Promises.failed(cause);
 
         // Act
-        promise.onComplete(callback);
+        promise.then(callback);
 
         // Assert
         verify(callback);

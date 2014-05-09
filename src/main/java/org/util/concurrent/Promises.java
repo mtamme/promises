@@ -84,7 +84,7 @@ public final class Promises {
 
         final Awaiter<T> awaiter = new Awaiter<T>();
 
-        promise.onComplete(awaiter);
+        promise.then(awaiter);
 
         return new Future<T>() {
             @Override

@@ -88,12 +88,12 @@ final class DefaultDeferred<T> implements Deferred<T> {
     }
 
     @Override
-    public void onComplete(final CompleteCallback<T> callback) {
+    public void then(final CompleteCallback<T> callback) {
         if (callback == null) {
             throw new IllegalArgumentException("Callback must not be null");
         }
 
-        _state.get().onComplete(callback);
+        _state.get().then(callback);
     }
 
     @Override
@@ -104,7 +104,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
 
         final Deferred<R> deferred = new DefaultDeferred<R>();
 
-        _state.get().onComplete(new CompleteCallback<T>() {
+        _state.get().then(new CompleteCallback<T>() {
             @Override
             public void onSuccess(final T value) {
                 try {
@@ -163,7 +163,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
          * 
          * @param callback The callback.
          */
-        void onComplete(CompleteCallback<T> callback);
+        void then(CompleteCallback<T> callback);
     }
 
     /**
@@ -253,7 +253,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
         }
 
         @Override
-        public void onComplete(final CompleteCallback<T> callback) {
+        public void then(final CompleteCallback<T> callback) {
             final Stage<T> stage = new Stage<T>(callback);
 
             addStage(stage);
@@ -305,7 +305,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
         }
 
         @Override
-        public void onComplete(final CompleteCallback<T> callback) {
+        public void then(final CompleteCallback<T> callback) {
             callback.onSuccess(_value);
         }
     }
@@ -332,7 +332,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
         }
 
         @Override
-        public void onComplete(final CompleteCallback<T> callback) {
+        public void then(final CompleteCallback<T> callback) {
             callback.onFailure(_cause);
         }
     }
@@ -372,7 +372,7 @@ final class DefaultDeferred<T> implements Deferred<T> {
          */
         public void complete(final State<T> state) {
             if (_completed.compareAndSet(false, true)) {
-                state.onComplete(_callback);
+                state.then(_callback);
             }
         }
     }
