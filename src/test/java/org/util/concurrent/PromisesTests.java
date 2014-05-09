@@ -34,10 +34,10 @@ import org.junit.runners.JUnit4;
 public final class PromisesTests {
 
     @Test
-    public void succeededTest() {
+    public void newSuccessTest() {
         // Arrange
         // Act
-        final Promise<Integer> promise = Promises.succeeded(1);
+        final Promise<Integer> promise = Promises.newSuccess(1);
 
         // Assert
         assertNotNull(promise);
@@ -45,10 +45,10 @@ public final class PromisesTests {
     }
 
     @Test
-    public void failedTest() {
+    public void newFailureTest() {
         // Arrange
         // Act
-        final Promise<Integer> promise = Promises.failed(new Throwable());
+        final Promise<Integer> promise = Promises.newFailure(new Throwable());
 
         // Assert
         assertNotNull(promise);
@@ -56,14 +56,14 @@ public final class PromisesTests {
     }
 
     @Test
-    public void thenWithSucceededTest() {
+    public void thenWithNewSuccessTest() {
         // Arrange
         @SuppressWarnings("unchecked")
         final Callback<Integer> callback = createStrictMock(Callback.class);
 
         callback.onSuccess(1);
         replay(callback);
-        final Promise<Integer> promise = Promises.succeeded(1);
+        final Promise<Integer> promise = Promises.newSuccess(1);
 
         // Act
         promise.then(callback);
@@ -73,7 +73,7 @@ public final class PromisesTests {
     }
 
     @Test
-    public void thenWithFailedTest() {
+    public void thenWithNewFailureTest() {
         // Arrange
         @SuppressWarnings("unchecked")
         final Callback<Integer> callback = createStrictMock(Callback.class);
@@ -81,7 +81,7 @@ public final class PromisesTests {
 
         callback.onFailure(cause);
         replay(callback);
-        final Promise<Integer> promise = Promises.failed(cause);
+        final Promise<Integer> promise = Promises.newFailure(cause);
 
         // Act
         promise.then(callback);
@@ -91,9 +91,9 @@ public final class PromisesTests {
     }
 
     @Test
-    public void getWithSucceededAndToFutureTest() throws InterruptedException, ExecutionException {
+    public void getWithNewSuccessAndToFutureTest() throws InterruptedException, ExecutionException {
         // Arrange
-        final Promise<Integer> promise = Promises.succeeded(1);
+        final Promise<Integer> promise = Promises.newSuccess(1);
         final Future<Integer> future = Promises.toFuture(promise);
 
         // Act
@@ -104,9 +104,9 @@ public final class PromisesTests {
     }
 
     @Test(expected = ExecutionException.class)
-    public void getWithFailedAndToFutureTest() throws InterruptedException, ExecutionException {
+    public void getWithNewFailureAndToFutureTest() throws InterruptedException, ExecutionException {
         // Arrange
-        final Promise<Integer> promise = Promises.failed(new Throwable());
+        final Promise<Integer> promise = Promises.newFailure(new Throwable());
         final Future<Integer> future = Promises.toFuture(promise);
 
         // Act
@@ -117,9 +117,9 @@ public final class PromisesTests {
     }
 
     @Test
-    public void getWithSucceededAndToFutureAndTimeoutTest() throws InterruptedException, ExecutionException, TimeoutException {
+    public void getWithNewSuccessAndToFutureAndTimeoutTest() throws InterruptedException, ExecutionException, TimeoutException {
         // Arrange
-        final Promise<Integer> promise = Promises.succeeded(1);
+        final Promise<Integer> promise = Promises.newSuccess(1);
         final Future<Integer> future = Promises.toFuture(promise);
 
         // Act
@@ -130,9 +130,9 @@ public final class PromisesTests {
     }
 
     @Test(expected = ExecutionException.class)
-    public void getWithFailedAndToFutureAndTimeoutTest() throws InterruptedException, ExecutionException, TimeoutException {
+    public void getWithNewFailureAndToFutureAndTimeoutTest() throws InterruptedException, ExecutionException, TimeoutException {
         // Arrange
-        final Promise<Integer> promise = Promises.failed(new Throwable());
+        final Promise<Integer> promise = Promises.newFailure(new Throwable());
         final Future<Integer> future = Promises.toFuture(promise);
 
         // Act
