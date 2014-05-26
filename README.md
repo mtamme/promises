@@ -1,6 +1,6 @@
 # promises
 
-A simple nonblocking promise implementation with pipelining support.
+A nonblocking promise implementation with pipelining support.
 
 # Copyright
 
