@@ -17,28 +17,37 @@
 package org.util.concurrent;
 
 /**
- * Defines a continuation.
- * 
- * @param <T> The value type.
- * @param <R> The result type.
+ * Represents a accept continuation.
  */
-public interface Continuation<T, R> {
+public abstract class Accept<T> implements Continuation<T, Void> {
 
     /**
-     * Completes the continuation with the specified value.
+     * Handles the accept continuation.
      * 
      * @param value The value.
-     * @param result The completable result.
+     * @return The result.
      * @throws Exception
      */
-    void onSuccess(T value, Completable<? super R> result) throws Exception;
+    protected abstract void doAccept(T value) throws Exception;
 
     /**
-     * Completes the continuation with the specified cause.
+     * Handles the failure continuation.
      * 
      * @param cause The cause.
-     * @param result The completable result.
      * @throws Exception
      */
-    void onFailure(Throwable cause, Completable<? super R> result) throws Exception;
+    protected void onFailure(final Throwable cause) throws Exception {
+    }
+
+    @Override
+    public void onSuccess(final T value, final Completable<? super Void> result) throws Exception {
+        doAccept(value);
+        result.setSuccess(null);
+    }
+
+    @Override
+    public void onFailure(final Throwable cause, final Completable<? super Void> result) throws Exception {
+        onFailure(cause);
+        result.setFailure(cause);
+    }
 }

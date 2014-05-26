@@ -24,6 +24,15 @@ package org.util.concurrent;
 public abstract class Catch<T> implements Continuation<T, T> {
 
     /**
+     * Handles the success continuation.
+     * 
+     * @param value The value.
+     * @throws Exception
+     */
+    protected void onSuccess(final T value) throws Exception {
+    }
+
+    /**
      * Handles the catch continuation.
      * 
      * @param cause The cause.
@@ -33,12 +42,13 @@ public abstract class Catch<T> implements Continuation<T, T> {
     protected abstract T doCatch(Throwable cause) throws Exception;
 
     @Override
-    public final void setSuccess(final T value, final Deferred<? super T> result) throws Exception {
+    public final void onSuccess(final T value, final Completable<? super T> result) throws Exception {
+        onSuccess(value);
         result.setSuccess(value);
     }
 
     @Override
-    public final void setFailure(final Throwable cause, final Deferred<? super T> result) throws Exception {
+    public final void onFailure(final Throwable cause, final Completable<? super T> result) throws Exception {
         final T value = doCatch(cause);
 
         result.setSuccess(value);
