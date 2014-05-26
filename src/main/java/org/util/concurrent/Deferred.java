@@ -34,7 +34,7 @@ public final class Deferred<T> implements Promise<T>, Completable<T> {
     /**
      * The private logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(Deferred.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Deferred.class);
 
     /**
      * The state of the deferred.
@@ -139,7 +139,8 @@ public final class Deferred<T> implements Promise<T>, Completable<T> {
                 try {
                     continuation.onFailure(cause, result);
                 } catch (final Throwable t) {
-                    t.addSuppressed(cause);
+                    // Only available since Java 7.
+                    // t.addSuppressed(cause);
                     result.setFailure(t);
                 }
             }
@@ -248,7 +249,7 @@ public final class Deferred<T> implements Promise<T>, Completable<T> {
                 try {
                     stage.complete(state);
                 } catch (final Throwable t) {
-                    logger.warn("Failed to complete stage", t);
+                    LOGGER.warn("Failed to complete stage", t);
                 }
             }
         }
@@ -285,7 +286,7 @@ public final class Deferred<T> implements Promise<T>, Completable<T> {
      * 
      * @param <T> The value type.
      */
-    private static abstract class CompleteState<T> implements State<T> {
+    private abstract static class CompleteState<T> implements State<T> {
 
         @Override
         public boolean isComplete() {
