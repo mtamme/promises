@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.util.concurrent;
+package org.util.concurrent.promise;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -28,6 +28,9 @@ import java.util.concurrent.TimeoutException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.util.concurrent.promise.Completable;
+import org.util.concurrent.promise.Promise;
+import org.util.concurrent.promise.Promises;
 
 @RunWith(JUnit4.class)
 public final class PromisesTest {

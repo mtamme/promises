@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.util.concurrent;
+package org.util.concurrent.promise;
 
 /**
  * Represents a compose continuation.

@@ -14,31 +14,44 @@
  * limitations under the License.
  */
 
-package org.util.concurrent;
+package org.util.concurrent.promise;
 
 /**
- * Defines a continuation.
+ * Represents an apply continuation.
  * 
  * @param <T> The value type.
  * @param <R> The result type.
  */
-public interface Continuation<T, R> {
+public abstract class Apply<T, R> implements Continuation<T, R> {
 
     /**
-     * Completes the continuation with the specified value.
+     * Handles the apply continuation.
      * 
      * @param value The value.
-     * @param result The completable result.
+     * @return The result.
      * @throws Exception
      */
-    void onSuccess(T value, Completable<? super R> result) throws Exception;
+    protected abstract R doApply(T value) throws Exception;
 
     /**
-     * Completes the continuation with the specified cause.
+     * Handles the failure continuation.
      * 
      * @param cause The cause.
-     * @param result The completable result.
      * @throws Exception
      */
-    void onFailure(Throwable cause, Completable<? super R> result) throws Exception;
+    protected void onFailure(final Throwable cause) throws Exception {
+    }
+
+    @Override
+    public final void onSuccess(final T value, final Completable<? super R> result) throws Exception {
+        final R newValue = doApply(value);
+
+        result.setSuccess(newValue);
+    }
+
+    @Override
+    public final void onFailure(final Throwable cause, final Completable<? super R> result) throws Exception {
+        onFailure(cause);
+        result.setFailure(cause);
+    }
 }

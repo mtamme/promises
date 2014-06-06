@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package org.util.concurrent;
+package org.util.concurrent.promise;
 
 /**
- * Represents a failure continuation.
- * 
- * @param <T> The value type.
+ * Represents a accept continuation.
  */
-public abstract class OnFailure<T> implements Continuation<T, T> {
+public abstract class Accept<T> implements Continuation<T, Void> {
+
+    /**
+     * Handles the accept continuation.
+     * 
+     * @param value The value.
+     * @return The result.
+     * @throws Exception
+     */
+    protected abstract void doAccept(T value) throws Exception;
 
     /**
      * Handles the failure continuation.
@@ -29,15 +36,17 @@ public abstract class OnFailure<T> implements Continuation<T, T> {
      * @param cause The cause.
      * @throws Exception
      */
-    protected abstract void onFailure(Throwable cause) throws Exception;
-
-    @Override
-    public final void onSuccess(final T value, final Completable<? super T> result) throws Exception {
-        result.setSuccess(value);
+    protected void onFailure(final Throwable cause) throws Exception {
     }
 
     @Override
-    public final void onFailure(final Throwable cause, final Completable<? super T> result) throws Exception {
+    public void onSuccess(final T value, final Completable<? super Void> result) throws Exception {
+        doAccept(value);
+        result.setSuccess(null);
+    }
+
+    @Override
+    public void onFailure(final Throwable cause, final Completable<? super Void> result) throws Exception {
         onFailure(cause);
         result.setFailure(cause);
     }

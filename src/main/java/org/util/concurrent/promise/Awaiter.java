@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.util.concurrent;
+package org.util.concurrent.promise;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;

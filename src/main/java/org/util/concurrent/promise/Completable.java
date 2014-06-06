@@ -14,8 +14,28 @@
  * limitations under the License.
  */
 
-/**
- * 
- */
-package org.util.concurrent;
+package org.util.concurrent.promise;
 
+/**
+ * Defines a completable.
+ * 
+ * @param <T> The value type.
+ */
+public interface Completable<T> {
+
+    /**
+     * Completes the completable with the specified value.
+     * 
+     * @param value The value.
+     * @throws IllegalStateException
+     */
+    void setSuccess(T value);
+
+    /**
+     * Completes the completable with the specified cause.
+     * 
+     * @param cause The cause.
+     * @throws IllegalStateException
+     */
+    void setFailure(Throwable cause);
+}

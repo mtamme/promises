@@ -14,37 +14,31 @@
  * limitations under the License.
  */
 
-package org.util.concurrent;
+package org.util.concurrent.promise;
 
 /**
- * Represents a finally continuation.
+ * Defines a continuation.
  * 
  * @param <T> The value type.
  * @param <R> The result type.
  */
-public abstract class Finally<T, R> implements Continuation<T, R> {
+public interface Continuation<T, R> {
 
     /**
-     * Handles the finally continuation.
+     * Completes the continuation with the specified value.
      * 
      * @param value The value.
-     * @param cause The cause.
-     * @return The result.
+     * @param result The completable result.
      * @throws Exception
      */
-    protected abstract R doFinally(T value, Throwable cause) throws Exception;
+    void onSuccess(T value, Completable<? super R> result) throws Exception;
 
-    @Override
-    public final void onSuccess(final T value, final Completable<? super R> result) throws Exception {
-        final R newValue = doFinally(value, null);
-
-        result.setSuccess(newValue);
-    }
-
-    @Override
-    public final void onFailure(final Throwable cause, final Completable<? super R> result) throws Exception {
-        final R newValue = doFinally(null, cause);
-
-        result.setSuccess(newValue);
-    }
+    /**
+     * Completes the continuation with the specified cause.
+     * 
+     * @param cause The cause.
+     * @param result The completable result.
+     * @throws Exception
+     */
+    void onFailure(Throwable cause, Completable<? super R> result) throws Exception;
 }

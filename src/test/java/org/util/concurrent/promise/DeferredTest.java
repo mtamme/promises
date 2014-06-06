@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.util.concurrent;
+package org.util.concurrent.promise;
 
 import static org.junit.Assert.*;
 import static org.easymock.EasyMock.*;
@@ -22,6 +22,8 @@ import static org.easymock.EasyMock.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.util.concurrent.promise.Completable;
+import org.util.concurrent.promise.Deferred;
 
 @RunWith(JUnit4.class)
 public final class DeferredTest {
