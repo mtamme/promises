@@ -1,6 +1,6 @@
 # promises
 
-A nonblocking promise implementation with continuation support for Java.
+A nonblocking promise implementation for Java.
 
 # Copyright
 
