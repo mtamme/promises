@@ -6,7 +6,7 @@
     <version>0.1-SNAPSHOT</version>
     <name>promises</name>
     <description>
-        A simple nonblocking promise implementation for Java.
+        A nonblocking promise implementation for Java.
     </description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
