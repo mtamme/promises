@@ -16,6 +16,7 @@
 
 package org.util.concurrent;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -82,6 +83,26 @@ public final class Promises {
     }
 
     /**
+     * Returns a new promise based on the execution of the specified callable.
+     * 
+     * @param callable The callable.
+     * @return The promise.
+     */
+    public static <V> Promise<V> newPromise(final Callable<V> callable) {
+        if (callable == null) {
+            throw new IllegalArgumentException("Callable must not be null");
+        }
+
+        try {
+            final V value = callable.call();
+
+            return newSuccess(value);
+        } catch (final Throwable t) {
+            return newFailure(t);
+        }
+    }
+
+    /**
      * Awaits the specified promise.
      * 
      * @param promise The promise.
@@ -99,6 +120,29 @@ public final class Promises {
         promise.then(awaiter);
 
         return awaiter.get();
+    }
+
+    /**
+     * Awaits the specified promise.
+     * 
+     * @param promise The promise.
+     * @param timeout The timeout.
+     * @param timeUnit The time unit.
+     * @return The value.
+     * @throws InterruptedException
+     * @throws ExecutionException
+     * @throws TimeoutException
+     */
+    public static <T> T await(final Promise<T> promise, final long timeout, final TimeUnit timeUnit) throws InterruptedException, ExecutionException, TimeoutException {
+        if (promise == null) {
+            throw new IllegalArgumentException("Promise must not be null");
+        }
+
+        final Awaiter<T> awaiter = new Awaiter<T>();
+
+        promise.then(awaiter);
+
+        return awaiter.get(timeout, timeUnit);
     }
 
     /**
