@@ -18,15 +18,16 @@ package org.util.concurrent.promise;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Represents a completable which can be awaited.
+ * Represents a completable future.
  * 
  * @param <T> The value type.
  */
-final class Awaiter<T> implements Completable<T> {
+final class CompletableFuture<T> implements Completable<T>, Future<T> {
 
     /**
      * Defines a value.
@@ -54,48 +55,39 @@ final class Awaiter<T> implements Completable<T> {
     private Value<T> _value;
 
     /**
-     * Initializes a new instance of the {@link Awaiter} class.
+     * Initializes a new instance of the {@link CompletableFuture} class.
      */
-    public Awaiter() {
+    public CompletableFuture() {
         _latch = new CountDownLatch(1);
 
         _value = null;
     }
 
-    /**
-     * Returns a value indicating whether the awaiter is complete.
-     * 
-     * @return A value indicating whether the awaiter is complete.
-     */
-    public boolean isComplete() {
+    @Override
+    public boolean cancel(final boolean mayInterruptIfRunning) {
+        return false;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return false;
+    }
+
+    @Override
+    public boolean isDone() {
         final long count = _latch.getCount();
 
         return (count == 0);
     }
 
-    /**
-     * Causes the current thread to wait until a {@link Promise} completed, unless the thread is interrupted.
-     * 
-     * @return The value.
-     * @throws InterruptedException
-     * @throws ExecutionException
-     */
+    @Override
     public T get() throws InterruptedException, ExecutionException {
         _latch.await();
 
         return _value.get();
     }
 
-    /**
-     * Causes the current thread to wait until a {@link Promise} completed, unless the thread is interrupted.
-     * 
-     * @param timeout The timeout.
-     * @param unit The time unit.
-     * @return The value.
-     * @throws InterruptedException
-     * @throws ExecutionException
-     * @throws TimeoutException
-     */
+    @Override
     public T get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         if (!_latch.await(timeout, unit)) {
             throw new TimeoutException("A timeout occured while waiting for completion");

@@ -115,11 +115,11 @@ public final class Promises {
             throw new IllegalArgumentException("Promise must not be null");
         }
 
-        final Awaiter<T> awaiter = new Awaiter<T>();
+        final CompletableFuture<T> future = new CompletableFuture<T>();
 
-        promise.then(awaiter);
+        promise.then(future);
 
-        return awaiter.get();
+        return future.get();
     }
 
     /**
@@ -138,11 +138,11 @@ public final class Promises {
             throw new IllegalArgumentException("Promise must not be null");
         }
 
-        final Awaiter<T> awaiter = new Awaiter<T>();
+        final CompletableFuture<T> future = new CompletableFuture<T>();
 
-        promise.then(awaiter);
+        promise.then(future);
 
-        return awaiter.get(timeout, timeUnit);
+        return future.get(timeout, timeUnit);
     }
 
     /**
@@ -156,35 +156,10 @@ public final class Promises {
             throw new IllegalArgumentException("Promise must not be null");
         }
 
-        final Awaiter<T> awaiter = new Awaiter<T>();
+        final CompletableFuture<T> future = new CompletableFuture<T>();
 
-        promise.then(awaiter);
+        promise.then(future);
 
-        return new Future<T>() {
-            @Override
-            public boolean cancel(final boolean mayInterruptIfRunning) {
-                return false;
-            }
-
-            @Override
-            public boolean isCancelled() {
-                return false;
-            }
-
-            @Override
-            public boolean isDone() {
-                return awaiter.isComplete();
-            }
-
-            @Override
-            public T get() throws InterruptedException, ExecutionException {
-                return awaiter.get();
-            }
-
-            @Override
-            public T get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-                return awaiter.get(timeout, unit);
-            }
-        };
+        return future;
     }
 }
