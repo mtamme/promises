@@ -32,7 +32,7 @@ public final class DeferredTest {
     public void constructorTest() {
         // Arrange
         // Act
-        final Deferred<Integer> deferred = new Deferred<Integer>();
+        final Deferred<Integer> deferred = new Deferred<>();
 
         // Assert
         assertFalse(deferred.isComplete());
@@ -41,7 +41,7 @@ public final class DeferredTest {
     @Test
     public void trySuccessTest() {
         // Arrange
-        final Deferred<Integer> deferred = new Deferred<Integer>();
+        final Deferred<Integer> deferred = new Deferred<>();
 
         // Act
         final boolean success = deferred.trySuccess(1);
@@ -54,7 +54,7 @@ public final class DeferredTest {
     @Test
     public void trySuccessWithSetFailureTest() {
         // Arrange
-        final Deferred<Integer> deferred = new Deferred<Integer>();
+        final Deferred<Integer> deferred = new Deferred<>();
 
         // Act
         deferred.setFailure(new Throwable());
@@ -73,7 +73,7 @@ public final class DeferredTest {
 
         completable.setSuccess(1);
         replay(completable);
-        final Deferred<Integer> deferred = new Deferred<Integer>();
+        final Deferred<Integer> deferred = new Deferred<>();
 
         deferred.then(completable);
 
@@ -89,7 +89,7 @@ public final class DeferredTest {
     @Test
     public void setFailureTest() {
         // Arrange
-        final Deferred<Integer> deferred = new Deferred<Integer>();
+        final Deferred<Integer> deferred = new Deferred<>();
 
         // Act
         final boolean failure = deferred.tryFailure(new Throwable());
@@ -102,7 +102,7 @@ public final class DeferredTest {
     @Test
     public void setFailureWithSetSuccessTest() {
         // Arrange
-        final Deferred<Integer> deferred = new Deferred<Integer>();
+        final Deferred<Integer> deferred = new Deferred<>();
 
         // Act
         deferred.setSuccess(1);
@@ -122,7 +122,7 @@ public final class DeferredTest {
 
         completable.setFailure(cause);
         replay(completable);
-        final Deferred<Integer> deferred = new Deferred<Integer>();
+        final Deferred<Integer> deferred = new Deferred<>();
 
         deferred.then(completable);
 
@@ -142,7 +142,7 @@ public final class DeferredTest {
         final Completable<Integer> completable = createStrictMock(Completable.class);
 
         replay(completable);
-        final Deferred<Integer> deferred = new Deferred<Integer>();
+        final Deferred<Integer> deferred = new Deferred<>();
 
         // Act
         deferred.then(completable);
@@ -159,7 +159,7 @@ public final class DeferredTest {
 
         completable.setSuccess(1);
         replay(completable);
-        final Deferred<Integer> deferred = new Deferred<Integer>();
+        final Deferred<Integer> deferred = new Deferred<>();
 
         deferred.setSuccess(1);
 
@@ -179,7 +179,7 @@ public final class DeferredTest {
 
         completable.setFailure(cause);
         replay(completable);
-        final Deferred<Integer> deferred = new Deferred<Integer>();
+        final Deferred<Integer> deferred = new Deferred<>();
 
         deferred.setFailure(cause);
 

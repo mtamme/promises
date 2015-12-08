@@ -5,18 +5,16 @@
     <artifactId>promises</artifactId>
     <version>0.1-SNAPSHOT</version>
     <name>promises</name>
-    <description>
-        A nonblocking promise implementation for Java.
-    </description>
+    <description>A nonblocking promise implementation for Java.</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Override the default Java compiler source and target level -->
-        <maven.compiler.target>1.6</maven.compiler.target>
-        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.7</maven.compiler.source>
         <!-- Configure dependency versions -->
-        <org.slf4j.version>1.7.7</org.slf4j.version>
-        <junit.version>4.11</junit.version>
-        <org.easymock.version>3.2</org.easymock.version>
+        <org.slf4j.version>1.7.13</org.slf4j.version>
+        <junit.version>4.12</junit.version>
+        <org.easymock.version>3.4</org.easymock.version>
     </properties>
     <dependencies>
         <dependency>
@@ -34,6 +32,12 @@
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
             <version>${org.easymock.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${org.slf4j.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
